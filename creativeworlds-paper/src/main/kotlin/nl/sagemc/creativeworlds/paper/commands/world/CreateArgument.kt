@@ -11,7 +11,7 @@ object CreateArgument : Command.CommandArgument<CommandSender>(LiteralParser("cr
     init {
         execute { source, _ ->
             if (source !is Player) return@execute
-            if (WorldManager.getWorlds(source).isNotEmpty()) {
+            if (WorldManager.getWorlds(source)?.isNotEmpty() == true) {
                 // TODO: Say world limit reached!
                 return@execute
             }

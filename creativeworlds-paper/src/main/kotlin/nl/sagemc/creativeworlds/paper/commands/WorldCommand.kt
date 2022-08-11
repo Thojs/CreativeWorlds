@@ -11,13 +11,14 @@ object WorldCommand : Command<CommandSender>("world", "w", "plot", "p") {
                 CreateArgument,
                 HomeArgument,
                 InfoArgument,
-                TrustArgument,
-                MemberArgument,
+                TrustArgument, // DONE
+                MemberArgument, // DONE
                 FlagArgument,
                 DenyArgument,
-                AliasArgument,
+                AliasArgument, // DONE
                 VisitArgument,
-                DeleteArgument
+                DeleteArgument,
+                SetSpawnArgument // DONE
             )
         }
     }
