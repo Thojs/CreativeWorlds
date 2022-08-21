@@ -8,6 +8,15 @@ import org.bukkit.entity.Player
 
 object SetSpawnArgument : Command.CommandArgument<CommandSender>(LiteralParser("setspawn")) {
     init {
+        require {
+            return@require if (it is Player) {
+                val world = WorldManager.getWorld(it.world) ?: return@require false
+                world.owner == it.uniqueId
+            } else {
+                true
+            }
+        }
+
         execute { source, _ ->
             if (source !is Player) return@execute
 

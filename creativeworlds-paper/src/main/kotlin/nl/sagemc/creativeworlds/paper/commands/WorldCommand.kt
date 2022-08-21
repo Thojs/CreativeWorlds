@@ -8,8 +8,8 @@ object WorldCommand : Command<CommandSender>("world", "w", "plot", "p") {
     init {
         command {
             appendArguments(
-                CreateArgument,
-                HomeArgument,
+                CreateArgument, // DONE
+                HomeArgument, // DONE
                 InfoArgument,
                 TrustArgument, // DONE
                 MemberArgument, // DONE

@@ -31,7 +31,7 @@ java {
 
 bukkit {
     name = "CreativeWorlds"
-    main = "nl.sagemc.creativeworlds.paper.CreativeWorlds.kt"
+    main = "nl.sagemc.creativeworlds.paper.CreativeWorlds"
     apiVersion = "1.19"
     authors = listOf("Thojs", "RobijnenTaart")
 }

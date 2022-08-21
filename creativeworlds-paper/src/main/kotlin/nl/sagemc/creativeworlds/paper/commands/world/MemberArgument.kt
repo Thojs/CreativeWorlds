@@ -10,7 +10,16 @@ import org.bukkit.entity.Player
 // TODO
 object MemberArgument : Command.CommandArgument<CommandSender>(LiteralParser("member")) {
     init {
-        TrustArgument.argument(PlayerParser) {
+        require {
+            return@require if (it is Player) {
+                val world = WorldManager.getWorld(it.world) ?: return@require false
+                world.owner == it.uniqueId
+            } else {
+                true
+            }
+        }
+
+        argument(PlayerParser) {
             execute { source, arguments ->
                 if (source !is Player) return@execute
 

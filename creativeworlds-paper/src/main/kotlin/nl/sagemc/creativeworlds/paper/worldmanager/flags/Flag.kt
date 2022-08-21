@@ -1,4 +1,8 @@
 package nl.sagemc.creativeworlds.paper.worldmanager.flags
 
-class Flag<T> (val name: String) {
+interface Flag<E> {
+    val name: String
+
+    fun serialize(obj: E): String
+    fun deserialize(): E
 }
