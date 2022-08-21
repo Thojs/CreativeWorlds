@@ -4,20 +4,14 @@ import net.kyori.adventure.text.Component
 import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.LiteralParser
 import nl.sagemc.creativeworlds.api.commandhandler.Command
 import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.StringParser
+import nl.sagemc.creativeworlds.paper.commands.WorldCommand
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 object AliasArgument : Command.CommandArgument<CommandSender>(LiteralParser("alias")) {
     init {
-        require {
-            return@require if (it is Player) {
-                val world = WorldManager.getWorld(it.world) ?: return@require false
-                world.owner == it.uniqueId
-            } else {
-                true
-            }
-        }
+        require { WorldCommand.testOwner(it) }
 
         argument(StringParser) {
             execute { source, arguments ->

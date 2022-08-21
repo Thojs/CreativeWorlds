@@ -10,7 +10,6 @@ import org.bukkit.event.world.ChunkLoadEvent
 import java.io.File
 import java.util.UUID
 
-// TODO: fix dit
 object WorldManager : Listener {
     private val worlds: MutableList<CreativeWorld> = ArrayList()
 
@@ -26,8 +25,10 @@ object WorldManager : Listener {
      * @param player The owning player of the world.
      * @return A new CreativeWorld instance.
      */
-    fun createWorld(player: UUID) {
-        worlds.add(CreativeWorld(player, getWorlds(player).lastOrNull()?.id?.plus(1) ?: 1))
+    fun createWorld(player: UUID): CreativeWorld {
+        val world = CreativeWorld(player, getWorlds(player).lastOrNull()?.id?.plus(1) ?: 1)
+        worlds.add(world)
+        return world
     }
 
     /**
@@ -79,12 +80,5 @@ object WorldManager : Listener {
     fun onLeave(e: PlayerQuitEvent) {
         val player = e.player
 
-    }
-
-    @EventHandler
-    fun onChunkLoad(e: ChunkLoadEvent) {
-        if (e.chunk.x >= 10) {
-
-        }
     }
 }

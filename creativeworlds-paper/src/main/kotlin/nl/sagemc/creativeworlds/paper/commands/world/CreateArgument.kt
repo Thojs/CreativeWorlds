@@ -11,13 +11,17 @@ object CreateArgument : Command.CommandArgument<CommandSender>(LiteralParser("cr
     init {
         execute { source, _ ->
             if (source !is Player) return@execute
-            if (WorldManager.getWorlds(source.uniqueId).isNotEmpty()) {
-                source.sendMessage(Component.text("You have reached your world creation limit!"))
-                return@execute
-            }
-            
-            WorldManager.createWorld(source.uniqueId)
-            source.sendMessage(Component.text("Created a new world!"))
+
+//            if (WorldManager.getWorlds(source.uniqueId).isNotEmpty()) {
+//                source.sendMessage(Component.text("You have reached your world creation limit!"))
+//                return@execute
+//            }
+
+            source.sendMessage(Component.text("Creating a new world, we will teleport you once the world has been created."))
+
+            val world = WorldManager.createWorld(source.uniqueId)
+            world.load()
+            world.bukkitWorld?.spawnLocation?.let { source.teleport(it) }
         }
     }
 }

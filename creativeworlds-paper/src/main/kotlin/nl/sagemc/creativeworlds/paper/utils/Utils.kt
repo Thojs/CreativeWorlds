@@ -21,6 +21,11 @@ object Utils {
         listener.forEach { Bukkit.getPluginManager().registerEvents(it, plugin) }
     }
 
+    /**
+     * Function for creating a BukkitRunnable object.
+     * @param run A function that will be used by the BukkitRunnable.
+     * @return A new BukkitRunnable instance.
+     */
     fun bukkitRunnable(run: () -> Unit) = object : BukkitRunnable() {
         override fun run() = run()
     }

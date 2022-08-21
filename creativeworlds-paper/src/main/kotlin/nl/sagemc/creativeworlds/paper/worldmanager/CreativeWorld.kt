@@ -21,7 +21,7 @@ class CreativeWorld(val owner: UUID, val id: Int) {
 
     val banned: MutableList<Player> = ArrayList()
 
-    var size: Int = 10
+    var size: Int = 25
 
     var alias: String = ""
 
@@ -30,7 +30,7 @@ class CreativeWorld(val owner: UUID, val id: Int) {
         config.getStringList("members").map { Bukkit.getPlayer(it) }.forEach { it?.let { members.add(it) } }
         config.getStringList("banned").map { Bukkit.getPlayer(it) }.forEach { it?.let { banned.add(it) } }
         alias = config.getString("alias") ?: ""
-        size = config.getInt("size")
+        size = config.getInt("size", size)
     }
 
     fun updateConfig() {
@@ -44,19 +44,32 @@ class CreativeWorld(val owner: UUID, val id: Int) {
         config.save()
     }
 
-    fun load(): World {
-        if (bukkitWorld != null) return bukkitWorld!!
+    fun load(): Boolean {
+        if (bukkitWorld != null) return true
 
-        bukkitWorld = WorldCreator(worldName)
+        val world = WorldCreator(worldName)
             .generateStructures(false)
             .type(WorldType.FLAT)
             .generator(CreativeWorldChunkGenerator(0, size))
-            .createWorld()
+            .createWorld() ?: return false
 
-        bukkitWorld?.difficulty = Difficulty.PEACEFUL
-        bukkitWorld?.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false)
+        // Set world properties
+        world.difficulty = Difficulty.PEACEFUL
+        world.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false)
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
+        world.setGameRule(GameRule.DO_TRADER_SPAWNING, false)
 
-        return bukkitWorld!!
+        // Create world border
+        val wbSize = ((size+1)*16/2).toDouble()
+
+        val border = world.worldBorder
+        border.center = Location(world, wbSize, 0.0, wbSize)
+        border.size = wbSize*2
+        border.warningDistance = -1
+
+        bukkitWorld = world
+
+        return true
     }
 
     fun unload() {

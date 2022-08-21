@@ -2,7 +2,9 @@ package nl.sagemc.creativeworlds.paper.commands
 
 import nl.sagemc.creativeworlds.api.commandhandler.Command
 import nl.sagemc.creativeworlds.paper.commands.world.*
+import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 object WorldCommand : Command<CommandSender>("world", "w", "plot", "p") {
     init {
@@ -20,6 +22,15 @@ object WorldCommand : Command<CommandSender>("world", "w", "plot", "p") {
                 DeleteArgument,
                 SetSpawnArgument // DONE
             )
+        }
+    }
+
+    fun testOwner(source: CommandSender): Boolean {
+        return if (source is Player) {
+            val world = WorldManager.getWorld(source.world) ?: return false
+            world.owner == source.uniqueId
+        } else {
+            true
         }
     }
 }
