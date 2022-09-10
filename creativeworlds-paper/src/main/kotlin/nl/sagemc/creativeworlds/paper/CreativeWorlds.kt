@@ -9,6 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin
 class CreativeWorlds : JavaPlugin() {
     override fun onEnable() {
         // Plugin startup logic
+        instance = this
+
         Utils.registerEvents(this,
             WorldManager
         )
@@ -20,5 +22,10 @@ class CreativeWorlds : JavaPlugin() {
 
     override fun onDisable() {
         // Plugin shutdown logic
+        instance = null
+    }
+
+    companion object {
+        var instance: CreativeWorlds? = null
     }
 }

@@ -2,35 +2,32 @@ package nl.sagemc.creativeworlds.paper.worldmanager
 
 import nl.sagemc.creativeworlds.paper.utils.Config
 import org.bukkit.*
-import org.bukkit.entity.Player
 import java.io.File
 import java.util.*
 
 class CreativeWorld(val owner: UUID, val id: Int) {
-    private val worldName = "${owner}_$id"
+    private val worldName = "CreativeWorlds/${owner}/$id"
     private val config: Config = Config(File(Bukkit.getWorldContainer().path + "/" + worldName, "cw_properties.yml"))
 
     var bukkitWorld: World? = null
         private set
 
-    val loaded: Boolean
-        get() = bukkitWorld != null
+    val trusted: MutableList<OfflinePlayer> = ArrayList()
+    val members: MutableList<OfflinePlayer> = ArrayList()
 
-    val trusted: MutableList<Player> = ArrayList()
-    val members: MutableList<Player> = ArrayList()
+    val denied: MutableList<OfflinePlayer> = ArrayList()
 
-    val banned: MutableList<Player> = ArrayList()
-
-    var size: Int = 25
+    var size: Int = 15
 
     var alias: String = ""
 
     init {
-        config.getStringList("trusted").map { Bukkit.getPlayer(it) }.forEach { it?.let { trusted.add(it) } }
-        config.getStringList("members").map { Bukkit.getPlayer(it) }.forEach { it?.let { members.add(it) } }
-        config.getStringList("banned").map { Bukkit.getPlayer(it) }.forEach { it?.let { banned.add(it) } }
-        alias = config.getString("alias") ?: ""
+        config.getStringList("trusted").map { Bukkit.getOfflinePlayer(it) }.forEach { trusted.add(it) }
+        config.getStringList("members").map { Bukkit.getOfflinePlayer(it) }.forEach { members.add(it) }
+        config.getStringList("denied").map { Bukkit.getOfflinePlayer(it) }.forEach { denied.add(it) }
+
         size = config.getInt("size", size)
+        alias = config.getString("alias") ?: ""
     }
 
     fun updateConfig() {
@@ -38,7 +35,7 @@ class CreativeWorld(val owner: UUID, val id: Int) {
 
         config["trusted"] = trusted.map { it.uniqueId.toString() }
         config["members"] = members.map { it.uniqueId.toString() }
-        config["banned"] = banned.map { it.uniqueId.toString() }
+        config["denied"] = denied.map { it.uniqueId.toString() }
 
         config["alias"] = alias
         config.save()
@@ -50,25 +47,26 @@ class CreativeWorld(val owner: UUID, val id: Int) {
         val world = WorldCreator(worldName)
             .generateStructures(false)
             .type(WorldType.FLAT)
-            .generator(CreativeWorldChunkGenerator(0, size))
+            .generator(CreativeWorldChunkGenerator(0))
             .createWorld() ?: return false
 
         // Set world properties
-        world.difficulty = Difficulty.PEACEFUL
-        world.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false)
-        world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
-        world.setGameRule(GameRule.DO_TRADER_SPAWNING, false)
+        world.apply {
+            difficulty = Difficulty.PEACEFUL
 
-        // Create world border
-        val wbSize = ((size+1)*16/2).toDouble()
+            setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false)
+            setGameRule(GameRule.DO_MOB_SPAWNING, false)
+            setGameRule(GameRule.DO_TRADER_SPAWNING, false)
+            setGameRule(GameRule.DO_WEATHER_CYCLE, false)
 
-        val border = world.worldBorder
-        border.center = Location(world, wbSize, 0.0, wbSize)
-        border.size = wbSize*2
-        border.warningDistance = -1
+            // Create world border
+            worldBorder.center = Location(world, 8.0, 0.0, 8.0)
+            worldBorder.size = (size.toDouble() * 2 + 1) * 16
+            worldBorder.warningDistance = -1
+        }
 
+        // Set bukkitWorld variable and return true
         bukkitWorld = world
-
         return true
     }
 

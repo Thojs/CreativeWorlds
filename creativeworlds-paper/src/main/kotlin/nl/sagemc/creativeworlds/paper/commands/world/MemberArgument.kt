@@ -8,7 +8,6 @@ import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-// TODO
 object MemberArgument : Command.CommandArgument<CommandSender>(LiteralParser("member")) {
     init {
         require { WorldCommand.testOwner(it) }
@@ -22,7 +21,7 @@ object MemberArgument : Command.CommandArgument<CommandSender>(LiteralParser("me
                 // Check if source is owner of world
                 if (world?.owner?.equals(source) != true) return@execute
 
-                // Set alias
+                // Add/Remove member
                 val player = arguments[1] as Player
 
                 val members = world.members

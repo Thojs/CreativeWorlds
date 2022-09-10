@@ -21,7 +21,7 @@ object TrustArgument : Command.CommandArgument<CommandSender>(LiteralParser("tru
                 // Check if source is owner of world
                 if (world?.owner?.equals(source) != true) return@execute
 
-                // Set alias
+                // Add/Remove Trusted player
                 val player = arguments[1] as Player
 
                 val trusted = world.trusted

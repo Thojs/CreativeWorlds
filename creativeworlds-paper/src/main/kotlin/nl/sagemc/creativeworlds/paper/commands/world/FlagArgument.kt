@@ -14,6 +14,7 @@ object FlagArgument : Command.CommandArgument<CommandSender>(LiteralParser("flag
 
         // TODO: Add FlagParser
         argument(LiteralParser("set")) {
+            return@argument
 
         }
 

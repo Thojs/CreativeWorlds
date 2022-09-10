@@ -25,9 +25,9 @@ object InfoArgument : Command.CommandArgument<CommandSender>(LiteralParser("info
             source.apply {
                 sendMessage(Component.text("Owner: ").append(Component.text(Bukkit.getOfflinePlayer(world.owner).name ?: "Unknown")))
                 sendMessage(Component.text("Alias: ").append(Component.text(world.alias)))
-                sendMessage(Component.text("Trusted: ").append(Component.text(world.trusted.joinToString(", ") { it.name })))
-                sendMessage(Component.text("Members: ").append(Component.text(world.members.joinToString(", ") { it.name })))
-                sendMessage(Component.text("Banned: ").append(Component.text(world.banned.joinToString(", ") { it.name })))
+                sendMessage(Component.text("Trusted: ").append(Component.text(world.trusted.joinToString(", ") { it.name ?: "" })))
+                sendMessage(Component.text("Members: ").append(Component.text(world.members.joinToString(", ") { it.name ?: "" })))
+                sendMessage(Component.text("Banned: ").append(Component.text(world.denied.joinToString(", ") { it.name ?: "" })))
             }
         }
     }

@@ -8,14 +8,27 @@ import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-// TODO
 object DenyArgument : Command.CommandArgument<CommandSender>(LiteralParser("deny")) {
     init {
         require { WorldCommand.testOwner(it) }
 
         argument(PlayerParser) {
             execute { source, arguments ->
+                if (source !is Player) return@execute
 
+                val world = WorldManager.getWorld(source.world)
+
+                // Check if source is owner of world
+                if (world?.owner?.equals(source) != true) return@execute
+
+                val player = arguments[0] as Player
+
+                val members = world.denied
+                if (members.contains(player)) {
+                    members.remove(player)
+                } else {
+                    members.add(player)
+                }
             }
         }
     }

@@ -5,13 +5,14 @@ import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.event.world.ChunkLoadEvent
 import java.io.File
 import java.util.UUID
 
 object WorldManager : Listener {
     private val worlds: MutableList<CreativeWorld> = ArrayList()
+
+    private val worldDirectory = File(Bukkit.getWorldContainer(), "/CreativeWorlds/")
+
 
     /**
      * Function to get a CreativeWorld instance from a bukkit world.
@@ -68,17 +69,10 @@ object WorldManager : Listener {
         val player = e.player
 
         // Load CreativeWorld instances
-        Bukkit.getWorldContainer().listFiles()?.filter { it.isDirectory && it.name.startsWith("${player.uniqueId}_") }?.forEach { file ->
-            file.nameWithoutExtension.split("_").find { it.toIntOrNull() != null }?.toInt()?.let {
+        File(worldDirectory, "/${player.uniqueId}/").listFiles()?.filter { it.isDirectory }?.forEach { file ->
+            file.name.toIntOrNull()?.let {
                 worlds.add(CreativeWorld(player.uniqueId, it))
             }
         }
-    }
-
-    // TODO: Maybe unload?
-    @EventHandler
-    fun onLeave(e: PlayerQuitEvent) {
-        val player = e.player
-
     }
 }
