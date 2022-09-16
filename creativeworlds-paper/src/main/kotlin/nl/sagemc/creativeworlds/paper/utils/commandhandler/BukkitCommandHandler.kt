@@ -2,7 +2,6 @@ package nl.sagemc.creativeworlds.paper.utils.commandhandler
 
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
-import nl.sagemc.creativeworlds.api.commandhandler.Command.CommandException
 import nl.sagemc.creativeworlds.api.commandhandler.CommandHandler
 import org.bukkit.command.*
 

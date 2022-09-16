@@ -1,12 +1,12 @@
 package nl.sagemc.creativeworlds.paper.worldmanager
 
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import java.io.File
-import java.util.UUID
 
 object WorldManager : Listener {
     private val worlds: MutableList<CreativeWorld> = ArrayList()
@@ -26,7 +26,7 @@ object WorldManager : Listener {
      * @param player The owning player of the world.
      * @return A new CreativeWorld instance.
      */
-    fun createWorld(player: UUID): CreativeWorld {
+    fun createWorld(player: OfflinePlayer): CreativeWorld {
         val world = CreativeWorld(player, getWorlds(player).lastOrNull()?.id?.plus(1) ?: 1)
         worlds.add(world)
         return world
@@ -49,7 +49,7 @@ object WorldManager : Listener {
      * @param index The index of the world.
      * @return A CreativeWorld instance if there is one.
      */
-    fun getWorld(player: UUID, index: Int): CreativeWorld? {
+    fun getWorld(player: OfflinePlayer, index: Int): CreativeWorld? {
         val worlds = getWorlds(player)
         if (worlds.size >= index) return worlds[index]
         return null
@@ -60,7 +60,7 @@ object WorldManager : Listener {
      * @param player The player to query for.
      * @return A list of CreativeWorld instances.
      */
-    fun getWorlds(player: UUID): List<CreativeWorld> {
+    fun getWorlds(player: OfflinePlayer): List<CreativeWorld> {
         return worlds.filter { it.owner == player }
     }
 
@@ -71,7 +71,7 @@ object WorldManager : Listener {
         // Load CreativeWorld instances
         File(worldDirectory, "/${player.uniqueId}/").listFiles()?.filter { it.isDirectory }?.forEach { file ->
             file.name.toIntOrNull()?.let {
-                worlds.add(CreativeWorld(player.uniqueId, it))
+                worlds.add(CreativeWorld(player, it))
             }
         }
     }

@@ -1,25 +1,20 @@
 package nl.sagemc.creativeworlds.paper.commands.world
 
 import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.LiteralParser
-import nl.sagemc.creativeworlds.api.commandhandler.Command
-import nl.sagemc.creativeworlds.paper.commands.WorldCommand
-import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
+import nl.sagemc.creativeworlds.api.commandhandler.CommandArgument
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
 // TODO
-object FlagArgument : Command.CommandArgument<CommandSender>(LiteralParser("flag")) {
+class FlagArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "flag", LiteralParser("flag")) {
     init {
-        require { WorldCommand.testOwner(it) }
-
         // TODO: Add FlagParser
-        argument(LiteralParser("set")) {
+        argument(LiteralParser("set") id "set") {
             return@argument
 
         }
 
         // TODO: Add FlagParser
-        argument(LiteralParser("remove")) {
+        argument(LiteralParser("remove") id "remove") {
 
         }
     }

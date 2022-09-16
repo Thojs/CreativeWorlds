@@ -1,28 +1,25 @@
 package nl.sagemc.creativeworlds.paper.commands.world
 
 import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.LiteralParser
-import nl.sagemc.creativeworlds.api.commandhandler.Command
-import nl.sagemc.creativeworlds.paper.commands.WorldCommand
+import nl.sagemc.creativeworlds.api.commandhandler.CommandArgument
 import nl.sagemc.creativeworlds.paper.utils.commandhandler.PlayerParser
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object MemberArgument : Command.CommandArgument<CommandSender>(LiteralParser("member")) {
+class MemberArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "member", LiteralParser("member")) {
     init {
-        require { WorldCommand.testOwner(it) }
-
-        argument(PlayerParser) {
-            execute { source, arguments ->
-                if (source !is Player) return@execute
+        argument(PlayerParser id "player") {
+            executor {
+                if (source !is Player) return@executor
 
                 val world = WorldManager.getWorld(source.world)
 
                 // Check if source is owner of world
-                if (world?.owner?.equals(source) != true) return@execute
+                if (world?.owner?.equals(source) != true) return@executor
 
                 // Add/Remove member
-                val player = arguments[1] as Player
+                val player = it[1] as Player
 
                 val members = world.members
                 if (members.contains(player)) {

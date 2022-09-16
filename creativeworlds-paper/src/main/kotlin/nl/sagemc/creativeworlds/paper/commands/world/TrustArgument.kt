@@ -2,27 +2,24 @@ package nl.sagemc.creativeworlds.paper.commands.world
 
 import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.LiteralParser
 import nl.sagemc.creativeworlds.paper.utils.commandhandler.PlayerParser
-import nl.sagemc.creativeworlds.api.commandhandler.Command
-import nl.sagemc.creativeworlds.paper.commands.WorldCommand
+import nl.sagemc.creativeworlds.api.commandhandler.CommandArgument
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object TrustArgument : Command.CommandArgument<CommandSender>(LiteralParser("trust")) {
+class TrustArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "trust", LiteralParser("trust")) {
     init {
-        require { WorldCommand.testOwner(it) }
-
-        argument(PlayerParser) {
-            execute { source, arguments ->
-                if (source !is Player) return@execute
+        argument(PlayerParser id "player") {
+            executor {
+                if (source !is Player) return@executor
 
                 val world = WorldManager.getWorld(source.world)
 
                 // Check if source is owner of world
-                if (world?.owner?.equals(source) != true) return@execute
+                if (world?.owner?.equals(source) != true) return@executor
 
                 // Add/Remove Trusted player
-                val player = arguments[1] as Player
+                val player = it[1] as Player
 
                 val trusted = world.trusted
                 if (trusted.contains(player)) {
