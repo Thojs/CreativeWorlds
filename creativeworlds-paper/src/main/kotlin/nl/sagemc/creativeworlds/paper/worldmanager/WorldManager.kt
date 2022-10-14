@@ -6,6 +6,7 @@ import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.world.WorldUnloadEvent
 import java.io.File
 
 object WorldManager : Listener {
@@ -38,7 +39,6 @@ object WorldManager : Listener {
      */
     fun deleteWorld(creativeWorld: CreativeWorld) {
         creativeWorld.unload()
-        creativeWorld.owner
         val worldDir = File(Bukkit.getWorldContainer().path + "/" + creativeWorld.bukkitWorld?.name)
         if (worldDir.exists()) worldDir.delete()
     }
@@ -74,5 +74,13 @@ object WorldManager : Listener {
                 worlds.add(CreativeWorld(player, it))
             }
         }
+    }
+
+    @EventHandler
+    fun onWorldUnload(e: WorldUnloadEvent) {
+        val world = getWorld(e.world) ?: return
+        world.updateConfig()
+        Bukkit.unloadWorld(world.bukkitWorld)
+        getWorld(e.world)?.updateConfig()
     }
 }

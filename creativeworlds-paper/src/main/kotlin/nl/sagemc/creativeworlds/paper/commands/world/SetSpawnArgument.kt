@@ -13,10 +13,7 @@ class SetSpawnArgument(source: CommandSender) : CommandArgument<CommandSender, S
 
             val world = WorldManager.getWorld(source.world)
 
-            // Check if source is owner of world
-            if (world?.owner?.equals(source) != true) return@executor
-
-            world.bukkitWorld?.spawnLocation = source.location
+            world?.bukkitWorld?.spawnLocation = source.location
         }
     }
 }

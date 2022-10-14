@@ -15,17 +15,15 @@ class TrustArgument(source: CommandSender) : CommandArgument<CommandSender, Stri
 
                 val world = WorldManager.getWorld(source.world)
 
-                // Check if source is owner of world
-                if (world?.owner?.equals(source) != true) return@executor
-
                 // Add/Remove Trusted player
-                val player = it[1] as Player
+                val player = it[this]
 
-                val trusted = world.trusted
-                if (trusted.contains(player)) {
-                    trusted.remove(player)
-                } else {
-                    trusted.add(player)
+                world?.trusted?.apply {
+                    if (contains(player)) {
+                        remove(player)
+                    } else {
+                        add(player)
+                    }
                 }
             }
         }

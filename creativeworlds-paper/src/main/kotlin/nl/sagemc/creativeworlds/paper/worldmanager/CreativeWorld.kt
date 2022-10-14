@@ -1,5 +1,7 @@
 package nl.sagemc.creativeworlds.paper.worldmanager
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import nl.sagemc.creativeworlds.paper.utils.Config
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.FlagContainer
 import org.bukkit.*
@@ -30,8 +32,13 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             field = value
         }
 
-    val publicFlagContainer = FlagContainer(config.getConfigurationSection("publicFlags") ?: config.createSection("publicFlags"))
-    val privateFlagContainer = FlagContainer(config.getConfigurationSection("privateFlags") ?: config.createSection("privateFlags"))
+    var description: Component = Component.empty()
+        set(value) {
+            config["description"] = MiniMessage.miniMessage().serialize(value)
+            field = value
+        }
+
+    val flagContainer: FlagContainer = FlagContainer(config.getConfigurationSection("flags") ?: config.createSection("flags"))
 
     init {
         config.getStringList("trusted").map { Bukkit.getOfflinePlayer(it) }.forEach { trusted.add(it) }
@@ -40,6 +47,7 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
 
         size = config.getInt("size", size)
         alias = config.getString("alias") ?: ""
+        description = MiniMessage.miniMessage().deserialize(config.getString("description") ?: "")
     }
 
     fun updateConfig() {
@@ -68,6 +76,8 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             setGameRule(GameRule.DO_MOB_SPAWNING, false)
             setGameRule(GameRule.DO_TRADER_SPAWNING, false)
             setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+            setGameRule(GameRule.DO_FIRE_TICK, false)
+            setGameRule(GameRule.KEEP_INVENTORY, true)
 
             // Create world border
             worldBorder.center = Location(world, 8.0, 0.0, 8.0)

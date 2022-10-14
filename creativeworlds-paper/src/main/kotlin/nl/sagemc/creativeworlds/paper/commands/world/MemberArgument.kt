@@ -15,17 +15,15 @@ class MemberArgument(source: CommandSender) : CommandArgument<CommandSender, Str
 
                 val world = WorldManager.getWorld(source.world)
 
-                // Check if source is owner of world
-                if (world?.owner?.equals(source) != true) return@executor
-
                 // Add/Remove member
                 val player = it[1] as Player
 
-                val members = world.members
-                if (members.contains(player)) {
-                    members.remove(player)
-                } else {
-                    members.add(player)
+                world?.members?.apply {
+                    if (contains(player)) {
+                        remove(player)
+                    } else {
+                        add(player)
+                    }
                 }
             }
         }

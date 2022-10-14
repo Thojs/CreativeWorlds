@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.Flag
 
-class GreetingFlag : Flag<Component>("greeting", Component.empty()) {
+class FarewellFlag : Flag<Component>("farewell", Component.empty()) {
     override fun serialize(obj: Component): String {
         return MiniMessage.miniMessage().serialize(obj)
     }

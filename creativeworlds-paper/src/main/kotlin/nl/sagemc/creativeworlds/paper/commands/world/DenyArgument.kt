@@ -15,16 +15,14 @@ class DenyArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
 
                 val world = WorldManager.getWorld(source.world)
 
-                // Check if source is owner of world
-                if (world?.owner?.equals(source) != true) return@executor
-
                 val player = it[0] as Player
 
-                val members = world.denied
-                if (members.contains(player)) {
-                    members.remove(player)
-                } else {
-                    members.add(player)
+                world?.denied?.apply {
+                    if (contains(player)) {
+                        remove(player)
+                    } else {
+                        add(player)
+                    }
                 }
             }
         }

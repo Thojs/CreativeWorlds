@@ -1,26 +1,20 @@
-description
-greeting
-farewell
-keepinventory
-resourcepack
-grass-grow
-copper-oxide
-coral-die
-crop-grow
-disable-physics
-fly
-item-drop
-notify-enter
-notify-leave
-pvp
-redstone
-vehicle-use
-weather
-gamemode
-guest-gamemode
-block-break
-block-place
-block-use
-block-burn
-title
-animal-attack
+description // Een beschrijving van wat je ongeveer doet met je wereld.
+greeting // Een welkom bericht.
+farewell // Een verlaat bericht.
+grass-grow // Of gras kan groeien in de wereld.
+copper-oxide // Of koper kan oxideren
+coral-die // Of koraal dood kan gaan zonder water.
+crop-grow // Of groente kan groeien enzo
+disable-physics // Zwaartekracht
+fly // Of mensen kunnen vliegen in de wereld.
+item-drop // Of je items kan droppen.
+notify-enter // Bericht wanneer een speler de wereld joined (behalfe OP mensen).
+notify-leave // Bericht wanneer een speler de wereld verlaat (behalfe OP mensen).
+pvp // Of mensen kunnen vechten in een wereld.
+vehicle-use // Of mensen in karren kunnen zitten.
+weather // Het weer.
+gamemode // De gamemode van iedereen.
+guest-gamemode // De gamemode van bezoekers.
+block-use // Welke blokjes mensen mogen gebruiken.
+title // Bericht in midden van tekst al kom je in wereld.
+animal-attack // Of je dieren kan aanvallen.
