@@ -1,7 +1,7 @@
 package nl.sagemc.creativeworlds.paper.commands.world
 
-import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.LiteralParser
-import nl.sagemc.creativeworlds.api.commandhandler.CommandArgument
+import me.thojs.kommandhandler.core.CommandArgument
+import me.thojs.kommandhandler.core.parsers.LiteralParser
 import org.bukkit.command.CommandSender
 
 // TODO
@@ -9,12 +9,6 @@ class FlagArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
     init {
         // TODO: Add FlagParser
         argument(LiteralParser("set") id "set") {
-            return@argument
-
-        }
-
-        // TODO: Add FlagParser
-        argument(LiteralParser("remove") id "remove") {
 
         }
     }

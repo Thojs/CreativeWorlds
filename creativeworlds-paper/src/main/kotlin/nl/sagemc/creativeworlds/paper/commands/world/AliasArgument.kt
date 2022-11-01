@@ -1,9 +1,9 @@
 package nl.sagemc.creativeworlds.paper.commands.world
 
+import me.thojs.kommandhandler.core.CommandArgument
+import me.thojs.kommandhandler.core.parsers.LiteralParser
+import me.thojs.kommandhandler.core.parsers.StringParser
 import net.kyori.adventure.text.Component
-import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.LiteralParser
-import nl.sagemc.creativeworlds.api.commandhandler.CommandArgument
-import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.StringParser
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -20,8 +20,7 @@ class AliasArgument(source: CommandSender) : CommandArgument<CommandSender, Stri
                 if (world?.owner?.equals(source) != true) return@executor
 
                 // Set alias
-                val alias = it[1] as String
-                world.alias = alias
+                world.alias = it[this]
                 source.sendMessage(Component.text("Successfully set the alias of this world!"))
             }
         }

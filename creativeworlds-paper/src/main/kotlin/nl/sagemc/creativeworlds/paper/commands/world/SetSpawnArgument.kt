@@ -1,7 +1,7 @@
 package nl.sagemc.creativeworlds.paper.commands.world
 
-import nl.sagemc.creativeworlds.api.commandhandler.CommandArgument
-import nl.sagemc.creativeworlds.api.commandhandler.defaultparsers.LiteralParser
+import me.thojs.kommandhandler.core.CommandArgument
+import me.thojs.kommandhandler.core.parsers.LiteralParser
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

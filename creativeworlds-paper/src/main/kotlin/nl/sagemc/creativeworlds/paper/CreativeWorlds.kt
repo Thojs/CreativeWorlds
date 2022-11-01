@@ -1,9 +1,11 @@
 package nl.sagemc.creativeworlds.paper
 
+import me.thojs.kommandhandler.bukkit.BukkitCommandHandler
 import nl.sagemc.creativeworlds.paper.commands.WorldCommand
 import nl.sagemc.creativeworlds.paper.utils.Utils
-import nl.sagemc.creativeworlds.paper.utils.commandhandler.BukkitCommandHandler
+import nl.sagemc.creativeworlds.paper.worldmanager.EventListener
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
+import nl.sagemc.creativeworlds.paper.worldmanager.flags.defaultflags.*
 import org.bukkit.plugin.java.JavaPlugin
 
 class CreativeWorlds : JavaPlugin() {
@@ -12,7 +14,14 @@ class CreativeWorlds : JavaPlugin() {
         instance = this
 
         Utils.registerEvents(this,
-            WorldManager
+            WorldManager,
+            EventListener,
+            FarewellFlag,
+            GreetingFlag,
+            TitleFlag,
+            NotifyEnterFlag,
+            NotifyExitFlag,
+            PVPFlag
         )
 
         BukkitCommandHandler(this).registerCommands(

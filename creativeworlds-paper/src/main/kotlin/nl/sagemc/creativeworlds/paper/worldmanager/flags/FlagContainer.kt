@@ -1,32 +1,21 @@
 package nl.sagemc.creativeworlds.paper.worldmanager.flags
 
-import nl.sagemc.creativeworlds.api.commandhandler.ArgumentParser
+import nl.sagemc.creativeworlds.paper.worldmanager.CreativeWorld
 import org.bukkit.configuration.ConfigurationSection
 
-class FlagContainer(private val section: ConfigurationSection) {
-    private val flags = mutableListOf<Flag<*>>()
-
-    fun <E : Any> registerFlag(flag: Flag<E>) {
-        flag.value = section.getString(flag.name)?.let { flag.deserialize(it) } ?: flag.value
-        flags.add(flag)
-    }
+class FlagContainer(private val world: CreativeWorld, private val section: ConfigurationSection) {
+    private val flags = hashMapOf<Flag<*>, Any>()
     
     operator fun <E : Any> set(flag: Flag<E>, value: E) {
-        if (flags.contains(flag)) throw IllegalStateException("Flag is not registered to FlagContainer.")
-        flag.value = value
         section[flag.name] = flag.serialize(value)
+        flags[flag] = value
+        flag.onChange(world, value)
     }
     
     operator fun <E> get(flag: Flag<E>): E {
-        if (!flags.contains(flag)) throw IllegalArgumentException("Flag is not registered to FlagContainer.")
-        return flag.value
-    }
-
-    val flagParser = object : ArgumentParser<Flag<*>>() {
-        override fun parse(string: String): Flag<*>? {
-            return flags.find { it.name == string }
+        if (!flags.containsKey(flag) && section.contains(flag.name)) {
+            flags[flag] = section.getString(flag.name)?.let { flag.deserialize(it) } ?: flag.defaultValue as Any
         }
-
-        override fun completions() = flags.map { it.name }.toTypedArray()
+        return flags[flag] as? E ?: flag.defaultValue
     }
 }

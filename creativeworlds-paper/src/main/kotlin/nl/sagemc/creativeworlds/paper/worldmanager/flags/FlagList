@@ -1,20 +1,15 @@
 description // Een beschrijving van wat je ongeveer doet met je wereld.
-greeting // Een welkom bericht.
-farewell // Een verlaat bericht.
-grass-grow // Of gras kan groeien in de wereld.
-copper-oxide // Of koper kan oxideren
-coral-die // Of koraal dood kan gaan zonder water.
-crop-grow // Of groente kan groeien enzo
-disable-physics // Zwaartekracht
+greeting // Een welkom bericht. - DONE
+farewell // Een verlaat bericht. - DONE
 fly // Of mensen kunnen vliegen in de wereld.
 item-drop // Of je items kan droppen.
-notify-enter // Bericht wanneer een speler de wereld joined (behalfe OP mensen).
-notify-leave // Bericht wanneer een speler de wereld verlaat (behalfe OP mensen).
-pvp // Of mensen kunnen vechten in een wereld.
+notify-enter // Bericht wanneer een speler de wereld joined (behalfe OP mensen). - DONE
+notify-leave // Bericht wanneer een speler de wereld verlaat (behalfe OP mensen). - DONE
+pvp // Of mensen kunnen vechten in een wereld. - DONE
 vehicle-use // Of mensen in karren kunnen zitten.
-weather // Het weer.
+weather // Het weer. - DONE
 gamemode // De gamemode van iedereen.
 guest-gamemode // De gamemode van bezoekers.
 block-use // Welke blokjes mensen mogen gebruiken.
-title // Bericht in midden van tekst al kom je in wereld.
+title // Bericht in midden van tekst al kom je in wereld. - DONE
 animal-attack // Of je dieren kan aanvallen.

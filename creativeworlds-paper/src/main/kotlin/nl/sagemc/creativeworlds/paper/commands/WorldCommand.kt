@@ -1,6 +1,6 @@
 package nl.sagemc.creativeworlds.paper.commands
 
-import nl.sagemc.creativeworlds.api.commandhandler.Command
+import me.thojs.kommandhandler.core.Command
 import nl.sagemc.creativeworlds.paper.commands.world.*
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender

@@ -80,7 +80,6 @@ object WorldManager : Listener {
     fun onWorldUnload(e: WorldUnloadEvent) {
         val world = getWorld(e.world) ?: return
         world.updateConfig()
-        Bukkit.unloadWorld(world.bukkitWorld)
         getWorld(e.world)?.updateConfig()
     }
 }
