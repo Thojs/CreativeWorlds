@@ -1,8 +1,11 @@
 package nl.sagemc.creativeworlds.paper.commands.world
 
+import me.thojs.kommandhandler.bukkit.parsers.OfflinePlayerParser
 import me.thojs.kommandhandler.core.CommandArgument
 import me.thojs.kommandhandler.core.parsers.LiteralParser
-import nl.sagemc.creativeworlds.paper.utils.commandhandler.OfflinePlayerParser
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import nl.sagemc.creativeworlds.paper.CreativeWorlds
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -16,15 +19,15 @@ class MemberArgument(source: CommandSender) : CommandArgument<CommandSender, Str
                 val world = WorldManager.getWorld(source.world)
 
                 // Add/Remove member
-                val player = it[this]
+                val player = it[this] ?: return@executor
 
                 world?.members?.apply {
                     if (contains(player)) {
                         remove(player)
-                        source.sendMessage("Removed ${player.name}")
+                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from members.").color(NamedTextColor.GREEN)))
                     } else {
                         add(player)
-                        source.sendMessage("Added ${player.name}")
+                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to members.").color(NamedTextColor.GREEN)))
                     }
                 }
             }

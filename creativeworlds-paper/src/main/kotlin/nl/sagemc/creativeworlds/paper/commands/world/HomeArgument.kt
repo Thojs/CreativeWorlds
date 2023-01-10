@@ -7,14 +7,14 @@ import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class HomeArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "home", LiteralParser("home")) {
+class HomeArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "home", LiteralParser("home", "h")) {
     init {
         // (plot-id)
         argument(IntegerParser id "id") {
             executor {
                 if (source !is Player) return@executor
 
-                val index = it[1] as Int
+                val index = it[this] ?: return@executor
                 goToPlot(source, index)
             }
         }

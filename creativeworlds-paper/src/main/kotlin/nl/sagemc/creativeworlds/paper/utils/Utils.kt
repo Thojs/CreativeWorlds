@@ -1,5 +1,6 @@
 package nl.sagemc.creativeworlds.paper.utils
 
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.permissions.Permission
@@ -29,4 +30,6 @@ object Utils {
     fun bukkitRunnable(run: () -> Unit) = object : BukkitRunnable() {
         override fun run() = run()
     }
+
+    fun miniMessage(msg: String) = MiniMessage.miniMessage().deserialize(msg)
 }

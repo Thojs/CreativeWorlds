@@ -22,6 +22,9 @@ class DenyArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
                         remove(player)
                     } else {
                         add(player)
+                        if (player.location.world == world.bukkitWorld) {
+                            // TODO: remove player from world
+                        }
                     }
                 }
             }

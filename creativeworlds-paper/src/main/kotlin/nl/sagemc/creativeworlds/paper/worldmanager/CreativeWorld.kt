@@ -6,6 +6,7 @@ import nl.sagemc.creativeworlds.paper.utils.Config
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.FlagContainer
 import org.bukkit.*
 import java.io.File
+import java.util.*
 
 class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     private val worldName = "CreativeWorlds/${owner.uniqueId}/$id"
@@ -40,9 +41,9 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     val flags = FlagContainer(this, config.getConfigurationSection("flags") ?: config.createSection("flags"))
 
     init {
-        config.getStringList("trusted").map { Bukkit.getOfflinePlayer(it) }.forEach { trusted.add(it) }
-        config.getStringList("members").map { Bukkit.getOfflinePlayer(it) }.forEach { members.add(it) }
-        config.getStringList("denied").map { Bukkit.getOfflinePlayer(it) }.forEach { denied.add(it) }
+        config.getStringList("trusted").map { Bukkit.getOfflinePlayer(UUID.fromString(it)) }.forEach { trusted.add(it) }
+        config.getStringList("members").map { Bukkit.getOfflinePlayer(UUID.fromString(it)) }.forEach { members.add(it) }
+        config.getStringList("denied").map { Bukkit.getOfflinePlayer(UUID.fromString(it)) }.forEach { denied.add(it) }
 
         size = config.getInt("size", size)
         alias = config.getString("alias") ?: ""

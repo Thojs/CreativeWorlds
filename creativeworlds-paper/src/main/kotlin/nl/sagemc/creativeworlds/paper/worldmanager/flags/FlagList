@@ -1,6 +1,6 @@
 description // Een beschrijving van wat je ongeveer doet met je wereld.
-greeting // Een welkom bericht. - DONE
-farewell // Een verlaat bericht. - DONE
+greeting // Een welkom bericht. - DONE - TESTED
+farewell // Een verlaat bericht. - DONE - TESTED
 fly // Of mensen kunnen vliegen in de wereld.
 item-drop // Of je items kan droppen.
 notify-enter // Bericht wanneer een speler de wereld joined (behalfe OP mensen). - DONE

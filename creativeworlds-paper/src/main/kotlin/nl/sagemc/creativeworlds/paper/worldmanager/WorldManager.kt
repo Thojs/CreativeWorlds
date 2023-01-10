@@ -3,6 +3,7 @@ package nl.sagemc.creativeworlds.paper.worldmanager
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -13,7 +14,6 @@ object WorldManager : Listener {
     private val worlds: MutableList<CreativeWorld> = ArrayList()
 
     private val worldDirectory = File(Bukkit.getWorldContainer(), "/CreativeWorlds/")
-
 
     /**
      * Function to get a CreativeWorld instance from a bukkit world.
@@ -79,7 +79,20 @@ object WorldManager : Listener {
     @EventHandler
     fun onWorldUnload(e: WorldUnloadEvent) {
         val world = getWorld(e.world) ?: return
-        world.updateConfig()
-        getWorld(e.world)?.updateConfig()
+        world.unload()
     }
+
+    fun unloadAllWorlds() {
+        worlds.forEach { it.unload() }
+    }
+
+    val Player.worldLimit: Int
+        get() {
+            var worldLimit = 0
+            this.effectivePermissions.filter { it.value || it.permission.startsWith("creativeworlds.worldlimit.")}.forEach {
+                val limit = it.permission.split("creativeworlds.worldlimit.").getOrNull(1)?.toIntOrNull() ?: return@forEach
+                if (limit > worldLimit) worldLimit = limit
+            }
+            return worldLimit
+        }
 }

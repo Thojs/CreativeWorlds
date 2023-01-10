@@ -12,7 +12,6 @@ class SetSpawnArgument(source: CommandSender) : CommandArgument<CommandSender, S
             if (source !is Player) return@executor
 
             val world = WorldManager.getWorld(source.world)
-
             world?.bukkitWorld?.spawnLocation = source.location
         }
     }

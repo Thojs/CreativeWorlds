@@ -1,14 +1,15 @@
 package nl.sagemc.creativeworlds.paper.commands
 
 import me.thojs.kommandhandler.core.Command
+import me.thojs.kommandhandler.core.CommandCreator
 import nl.sagemc.creativeworlds.paper.commands.world.*
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object WorldCommand : Command<CommandSender>("world", "w", "plot", "p") {
+object WorldCommand : CommandCreator<CommandSender>() {
     init {
-        command {
+        command("world", "w", "plot", "p") {
             appendArgument(CreateArgument(source)) // DONE
             appendArgument(HomeArgument(source)) // DONE
             appendArgument(VisitArgument(source))
@@ -22,7 +23,7 @@ object WorldCommand : Command<CommandSender>("world", "w", "plot", "p") {
                     appendArgument(TrustArgument(this)) // DONE
                     appendArgument(MemberArgument(this)) // DONE
                     appendArgument(FlagArgument(this))
-                    appendArgument(DenyArgument(this))
+                    appendArgument(DenyArgument(this)) // DONE
                     appendArgument(AliasArgument(this)) // DONE
                     appendArgument(DeleteArgument(this))
                     appendArgument(SetSpawnArgument(this)) // DONE
