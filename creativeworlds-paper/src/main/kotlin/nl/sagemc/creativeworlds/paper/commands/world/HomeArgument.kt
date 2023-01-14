@@ -3,6 +3,9 @@ package nl.sagemc.creativeworlds.paper.commands.world
 import me.thojs.kommandhandler.core.CommandArgument
 import me.thojs.kommandhandler.core.parsers.IntegerParser
 import me.thojs.kommandhandler.core.parsers.LiteralParser
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import nl.sagemc.creativeworlds.paper.CreativeWorlds
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -37,5 +40,9 @@ class HomeArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
 
         world.load()
         world.bukkitWorld?.spawnLocation?.let { player.teleport(it) }
+        source.sendMessage(
+            CreativeWorlds.prefix.append(
+                Component.text("Creating a new world, we will teleport you when the world has been loaded.").color(
+                    NamedTextColor.GREEN)))
     }
 }

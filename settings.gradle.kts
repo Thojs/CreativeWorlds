@@ -7,5 +7,4 @@ pluginManagement {
 
 rootProject.name = "CreativeWorlds"
 
-include(":creativeworlds-api")
 include(":creativeworlds-paper")

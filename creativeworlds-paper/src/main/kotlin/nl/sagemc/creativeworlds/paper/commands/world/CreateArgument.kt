@@ -20,7 +20,7 @@ class CreateArgument(source: CommandSender) : CommandArgument<CommandSender, Str
                 return@executor
             }
 
-            source.sendMessage(CreativeWorlds.prefix.append(Component.text("Creating a new world, we will teleport you once the world has been created.").color(NamedTextColor.GREEN)))
+            source.sendMessage(CreativeWorlds.prefix.append(Component.text("Creating a new world, we will teleport you when the world has been loaded.").color(NamedTextColor.GREEN)))
 
             val world = WorldManager.createWorld(source)
             world.load()

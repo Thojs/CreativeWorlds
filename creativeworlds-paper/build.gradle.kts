@@ -3,6 +3,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.3.8"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("maven-publish")
 }
 
 group = "nl.sagemc"
@@ -13,7 +14,6 @@ repositories {
 }
 
 dependencies {
-    api(project(":creativeworlds-api"))
     implementation(kotlin("stdlib-jdk8"))
     paperDevBundle("1.19.2-R0.1-SNAPSHOT")
 
@@ -41,4 +41,12 @@ bukkit {
     main = "nl.sagemc.creativeworlds.paper.CreativeWorlds"
     apiVersion = "1.19"
     authors = listOf("Thojs", "RobijnenTaart")
+}
+
+publishing {
+    publications {
+        create("maven", MavenPublication::class.java) {
+            from(components["java"])
+        }
+    }
 }

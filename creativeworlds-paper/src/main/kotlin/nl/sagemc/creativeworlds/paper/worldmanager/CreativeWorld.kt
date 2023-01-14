@@ -23,22 +23,25 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     var size: Int = 15
         set(value) {
             config["size"] = value
+            updateConfig()
             field = value
         }
 
     var alias: String = ""
         set(value) {
             config["alias"] = value
+            updateConfig()
             field = value
         }
 
     var description: Component = Component.empty()
         set(value) {
             config["description"] = MiniMessage.miniMessage().serialize(value)
+            updateConfig()
             field = value
         }
 
-    val flags = FlagContainer(this, config.getConfigurationSection("flags") ?: config.createSection("flags"))
+    val flags = FlagContainer(this, config.getConfigurationSection("flags") ?: config.createSection("flags"), this::updateConfig)
 
     init {
         config.getStringList("trusted").map { Bukkit.getOfflinePlayer(UUID.fromString(it)) }.forEach { trusted.add(it) }
@@ -78,6 +81,7 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             setGameRule(GameRule.DO_WEATHER_CYCLE, false)
             setGameRule(GameRule.DO_FIRE_TICK, false)
             setGameRule(GameRule.KEEP_INVENTORY, true)
+            setGameRule(GameRule.RANDOM_TICK_SPEED, 0)
 
             // Create world border
             worldBorder.center = Location(world, 8.0, 0.0, 8.0)

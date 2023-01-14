@@ -3,13 +3,14 @@ package nl.sagemc.creativeworlds.paper.worldmanager.flags
 import nl.sagemc.creativeworlds.paper.worldmanager.CreativeWorld
 import org.bukkit.configuration.ConfigurationSection
 
-class FlagContainer(private val world: CreativeWorld, private val section: ConfigurationSection) {
+class FlagContainer(private val world: CreativeWorld, private val section: ConfigurationSection, val update: () -> Unit) {
     private val flags = hashMapOf<Flag<*>, Any>()
     
     operator fun <E : Any> set(flag: Flag<E>, value: E) {
         section[flag.name] = flag.serialize(value)
         flags[flag] = value
         flag.onChange(world, value)
+        update()
     }
     
     operator fun <E> get(flag: Flag<E>): E {
