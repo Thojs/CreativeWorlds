@@ -6,7 +6,6 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.world.WorldUnloadEvent
 import java.io.File
 
@@ -61,19 +60,8 @@ object WorldManager : Listener {
      * @return A list of CreativeWorld instances.
      */
     fun getWorlds(player: OfflinePlayer): List<CreativeWorld> {
+        loadInstances(player)
         return worlds.filter { it.owner == player }
-    }
-
-    @EventHandler
-    fun onJoin(e: PlayerJoinEvent) {
-        val player = e.player
-
-        // Load CreativeWorld instances
-        File(worldDirectory, "/${player.uniqueId}/").listFiles()?.filter { it.isDirectory }?.forEach { file ->
-            file.name.toIntOrNull()?.let {
-                worlds.add(CreativeWorld(player, it))
-            }
-        }
     }
 
     @EventHandler
@@ -84,6 +72,17 @@ object WorldManager : Listener {
 
     fun unloadAllWorlds() {
         worlds.forEach { it.unload() }
+    }
+
+    private fun loadInstances(player: OfflinePlayer) {
+        val directory = File(worldDirectory, "/${player.uniqueId}/")
+        if (!directory.exists()) return
+        File(worldDirectory, "/${player.uniqueId}/").listFiles()?.filter { it.isDirectory }?.forEach { file ->
+            file.name.toIntOrNull()?.let { name ->
+                if (worlds.find { it.owner == player && it.id == name } != null) return@forEach
+                worlds.add(CreativeWorld(player, name))
+            }
+        }
     }
 
     val Player.worldLimit: Int

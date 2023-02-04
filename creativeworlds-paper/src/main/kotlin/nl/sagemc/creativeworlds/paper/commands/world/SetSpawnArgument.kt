@@ -6,7 +6,7 @@ import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class SetSpawnArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "setspawn", LiteralParser("setspawn")) {
+class SetSpawnArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("setspawn")) {
     init {
         executor {
             if (source !is Player) return@executor

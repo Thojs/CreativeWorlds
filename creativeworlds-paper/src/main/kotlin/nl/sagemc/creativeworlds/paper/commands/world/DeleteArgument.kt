@@ -8,7 +8,7 @@ import nl.sagemc.creativeworlds.paper.CreativeWorlds
 import org.bukkit.command.CommandSender
 
 // TODO
-class DeleteArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "delete", LiteralParser("delete")) {
+class DeleteArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("delete")) {
     init {
         executor {
             source.sendMessage(CreativeWorlds.prefix.append(Component.text("This sub-command is not implemented yet!").color(NamedTextColor.RED)))

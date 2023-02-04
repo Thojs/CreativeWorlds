@@ -10,7 +10,7 @@ import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager.worldLimit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class CreateArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "create", LiteralParser("create")) {
+class CreateArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("create")) {
     init {
         executor {
             if (source !is Player) return@executor

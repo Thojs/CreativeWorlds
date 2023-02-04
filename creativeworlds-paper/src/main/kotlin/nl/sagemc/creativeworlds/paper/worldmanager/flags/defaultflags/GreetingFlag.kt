@@ -2,14 +2,15 @@ package nl.sagemc.creativeworlds.paper.worldmanager.flags.defaultflags
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import nl.sagemc.creativeworlds.paper.commands.ComponentParser
 import nl.sagemc.creativeworlds.paper.worldmanager.CreativeWorld
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
-import nl.sagemc.creativeworlds.paper.worldmanager.flags.Flag
+import nl.sagemc.creativeworlds.paper.worldmanager.flags.CommandFlag
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerTeleportEvent
 
-object GreetingFlag : Flag<Component>("greeting", Component.empty()), Listener {
+object GreetingFlag : CommandFlag<Component>("greeting", Component.empty(), ComponentParser id "greetingMessage"), Listener {
     override fun serialize(obj: Component): String {
         return MiniMessage.miniMessage().serialize(obj)
     }

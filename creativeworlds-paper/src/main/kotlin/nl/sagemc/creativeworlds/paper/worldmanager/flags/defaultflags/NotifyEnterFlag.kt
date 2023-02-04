@@ -1,14 +1,18 @@
 package nl.sagemc.creativeworlds.paper.worldmanager.flags.defaultflags
 
+import me.thojs.kommandhandler.core.parsers.BooleanParser
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import nl.sagemc.creativeworlds.paper.CreativeWorlds
 import nl.sagemc.creativeworlds.paper.worldmanager.CreativeWorld
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
-import nl.sagemc.creativeworlds.paper.worldmanager.flags.Flag
+import nl.sagemc.creativeworlds.paper.worldmanager.flags.CommandFlag
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerTeleportEvent
 
-object NotifyEnterFlag : Flag<Boolean>("notify-enter", false), Listener {
+object NotifyEnterFlag : CommandFlag<Boolean>("notify-enter", false, BooleanParser id "value"), Listener {
     override fun serialize(obj: Boolean) = obj.toString()
 
     override fun deserialize(obj: String): Boolean? {
@@ -21,12 +25,13 @@ object NotifyEnterFlag : Flag<Boolean>("notify-enter", false), Listener {
     @EventHandler
     fun onWorldEnter(e: PlayerTeleportEvent) {
         if (e.from.world == e.to.world) return
-        if (e.player.isOp) return
 
         val world = WorldManager.getWorld(e.to.world) ?: return
 
+        if (e.player.isOp && !world.owner.isOp) return
+
         if (world.flags[this] && world.owner.isOnline) {
-            (world.owner as Player).sendMessage("Player ${e.player.name} entered your world.")
+            (world.owner as Player).sendMessage(CreativeWorlds.prefix.append(Component.text("Player ${e.player.name} entered your world.").color(NamedTextColor.GREEN)))
         }
     }
 }

@@ -2,6 +2,7 @@ package nl.sagemc.creativeworlds.paper.worldmanager
 
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
@@ -15,8 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.vehicle.VehicleDamageEvent
 
 object EventListener : Listener {
-    @EventHandler
-    fun onBreak(e: BlockBreakEvent) {
+    @EventHandler(priority = EventPriority.LOW)
+    fun onBlockBreak(e: BlockBreakEvent) {
         e.isCancelled = !allow(e.player)
     }
 
@@ -67,6 +68,6 @@ object EventListener : Listener {
 
     private fun allow(p: Player): Boolean {
         val world = WorldManager.getWorld(p.world) ?: return true
-        return world.owner.uniqueId == p.uniqueId || world.members.contains(p) && world.owner.isOnline || world.trusted.contains(p) || p.isOp
+        return world.hasRights(p)
     }
 }

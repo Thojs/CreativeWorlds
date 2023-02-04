@@ -1,14 +1,15 @@
 package nl.sagemc.creativeworlds.paper.worldmanager.flags.defaultflags
 
+import me.thojs.kommandhandler.core.parsers.BooleanParser
 import nl.sagemc.creativeworlds.paper.worldmanager.CreativeWorld
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
-import nl.sagemc.creativeworlds.paper.worldmanager.flags.Flag
+import nl.sagemc.creativeworlds.paper.worldmanager.flags.CommandFlag
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 
-object PVPFlag: Flag<Boolean>("pvp", false), Listener {
+object PVPFlag: CommandFlag<Boolean>("pvp", false, BooleanParser id "allow"), Listener {
     override fun serialize(obj: Boolean) = obj.toString()
 
     override fun deserialize(obj: String): Boolean? {

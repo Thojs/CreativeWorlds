@@ -1,6 +1,5 @@
 package nl.sagemc.creativeworlds.paper.commands
 
-import me.thojs.kommandhandler.core.Command
 import me.thojs.kommandhandler.core.CommandCreator
 import nl.sagemc.creativeworlds.paper.commands.world.*
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
@@ -35,9 +34,7 @@ object WorldCommand : CommandCreator<CommandSender>() {
     private fun testOwner(source: CommandSender): Boolean {
         return if (source is Player) {
             val world = WorldManager.getWorld(source.world) ?: return false
-            world.owner == source
-        } else {
-            true
-        }
+            return world.owner.uniqueId == source.uniqueId
+        } else false
     }
 }

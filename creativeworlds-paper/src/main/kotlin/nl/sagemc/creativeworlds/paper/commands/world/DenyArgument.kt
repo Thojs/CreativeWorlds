@@ -11,7 +11,7 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class DenyArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "deny", LiteralParser("deny")) {
+class DenyArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("deny")) {
     init {
         argument(PlayerParser id "player") {
             executor {

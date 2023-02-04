@@ -10,14 +10,14 @@ import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class HomeArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "home", LiteralParser("home", "h")) {
+class HomeArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("home", "h")) {
     init {
         // (plot-id)
         argument(IntegerParser id "id") {
             executor {
                 if (source !is Player) return@executor
 
-                val index = it[this] ?: return@executor
+                val index = it[this]
                 goToPlot(source, index)
             }
         }
@@ -31,18 +31,19 @@ class HomeArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
     private fun goToPlot(player: Player, id: Int) {
         val worlds = WorldManager.getWorlds(player)
 
-        if (worlds.size < id) {
-            player.sendMessage("Invalid plot provided. (${worlds.indices.first}, ${worlds.indices.last})")
+        if (id < 1 || worlds.size < id) {
+            player.sendMessage(CreativeWorlds.prefix.append(Component.text("Invalid plot id provided. (${worlds.indices.first+1}, ${worlds.indices.last+1})").color(NamedTextColor.RED)))
             return
         }
 
         val world = worlds[id-1]
 
+        if (world.bukkitWorld == null) {
+            source.sendMessage(CreativeWorlds.prefix.append(Component.text("Loading world, we will teleport you when the world has been loaded.").color(NamedTextColor.GREEN)))
+        } else {
+            source.sendMessage(CreativeWorlds.prefix.append(Component.text("Teleporting you to the world.").color(NamedTextColor.GREEN)))
+        }
         world.load()
         world.bukkitWorld?.spawnLocation?.let { player.teleport(it) }
-        source.sendMessage(
-            CreativeWorlds.prefix.append(
-                Component.text("Creating a new world, we will teleport you when the world has been loaded.").color(
-                    NamedTextColor.GREEN)))
     }
 }

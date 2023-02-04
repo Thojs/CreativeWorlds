@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 // TODO: add flags to info
-class InfoArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "info", LiteralParser("info", "i")) {
+class InfoArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("info", "i")) {
     init {
         executor {
             if (source !is Player) return@executor
@@ -30,7 +30,7 @@ class InfoArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
         }
     }
 
-    private fun addTag(tag: String, msg: String): Component {
-        return miniMessage("<yellow>$tag</yellow><dark_gray>: <reset>").append(Component.text(msg).color(NamedTextColor.GRAY))
+    private fun addTag(tag: String, msg: String?): Component {
+        return miniMessage("<yellow>$tag</yellow><dark_gray>: <reset>").append(Component.text(msg ?: "").color(NamedTextColor.GRAY))
     }
 }

@@ -10,7 +10,7 @@ import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class MemberArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, "member", LiteralParser("member")) {
+class MemberArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("member")) {
     init {
         argument(OfflinePlayerParser id "player") {
             executor {
@@ -19,7 +19,7 @@ class MemberArgument(source: CommandSender) : CommandArgument<CommandSender, Str
                 val world = WorldManager.getWorld(source.world)
 
                 // Add/Remove member
-                val player = it[this] ?: return@executor
+                val player = it[this]
 
                 world?.members?.apply {
                     if (contains(player)) {

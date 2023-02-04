@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import nl.sagemc.creativeworlds.paper.utils.Config
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.FlagContainer
 import org.bukkit.*
+import org.bukkit.entity.Player
 import java.io.File
 import java.util.*
 
@@ -27,7 +28,7 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             field = value
         }
 
-    var alias: String = ""
+    var alias: String? = null
         set(value) {
             config["alias"] = value
             updateConfig()
@@ -100,5 +101,9 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             Bukkit.unloadWorld(it, true)
             bukkitWorld = null
         }
+    }
+
+    fun hasRights(p: Player): Boolean {
+        return owner.uniqueId == p.uniqueId || members.contains(p) && owner.isOnline || trusted.contains(p) || p.isOp
     }
 }

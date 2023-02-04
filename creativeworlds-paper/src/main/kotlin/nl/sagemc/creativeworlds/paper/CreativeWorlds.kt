@@ -1,11 +1,16 @@
 package nl.sagemc.creativeworlds.paper
 
 import me.thojs.kommandhandler.bukkit.BukkitCommandHandler
+import me.thojs.kommandhandler.core.exceptions.ArgumentParseException
+import me.thojs.kommandhandler.core.exceptions.NoExecutorException
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import nl.sagemc.creativeworlds.paper.commands.WorldCommand
 import nl.sagemc.creativeworlds.paper.utils.Utils
 import nl.sagemc.creativeworlds.paper.utils.Utils.miniMessage
 import nl.sagemc.creativeworlds.paper.worldmanager.EventListener
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
+import nl.sagemc.creativeworlds.paper.worldmanager.flags.FlagContainer
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.defaultflags.*
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -25,8 +30,22 @@ class CreativeWorlds : JavaPlugin() {
             PVPFlag
         )
 
-        BukkitCommandHandler(this) { _, _ ->
+        FlagContainer.globalFlags.addAll(listOf(
+            FarewellFlag,
+            GreetingFlag,
+            NotifyEnterFlag,
+            NotifyExitFlag,
+            PVPFlag
+        ))
 
+        BukkitCommandHandler(this) { sender, exception ->
+            sender.sendMessage(prefix.append(
+                when (exception) {
+                    is NoExecutorException -> Component.text("Could not find an executor with the provided arguments.")
+                    is ArgumentParseException -> Component.text("Could not parse argument ${exception.index+1}")
+                    else -> Component.text("Unknown error occurred whilst executing the command.")
+                }.color(NamedTextColor.RED)
+            ))
         }.registerCommands(
             WorldCommand
         )
