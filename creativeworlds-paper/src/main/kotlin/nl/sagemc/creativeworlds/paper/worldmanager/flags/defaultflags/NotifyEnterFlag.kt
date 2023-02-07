@@ -7,16 +7,19 @@ import nl.sagemc.creativeworlds.paper.CreativeWorlds
 import nl.sagemc.creativeworlds.paper.worldmanager.CreativeWorld
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.CommandFlag
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerTeleportEvent
 
 object NotifyEnterFlag : CommandFlag<Boolean>("notify-enter", false, BooleanParser id "value"), Listener {
-    override fun serialize(obj: Boolean) = obj.toString()
+    override fun serialize(obj: Boolean, section: ConfigurationSection) {
+        section["value"] = obj
+    }
 
-    override fun deserialize(obj: String): Boolean? {
-        return obj.toBooleanStrictOrNull()
+    override fun deserialize(obj: ConfigurationSection): Boolean {
+        return obj.getBoolean("value")
     }
 
     override fun onChange(world: CreativeWorld, newValue: Boolean) {}

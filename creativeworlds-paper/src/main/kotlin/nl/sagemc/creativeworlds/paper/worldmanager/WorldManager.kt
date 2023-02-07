@@ -1,5 +1,6 @@
 package nl.sagemc.creativeworlds.paper.worldmanager
 
+import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager.worldLimit
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
@@ -93,5 +94,15 @@ object WorldManager : Listener {
                 if (limit > worldLimit) worldLimit = limit
             }
             return worldLimit
+        }
+
+    val Player.worldSize: Int
+        get() {
+            var worldSize = 0
+            this.effectivePermissions.filter { it.value || it.permission.startsWith("creativeworlds.worldlimit.")}.forEach {
+                val limit = it.permission.split("creativeworlds.worldlimit.").getOrNull(1)?.toIntOrNull() ?: return@forEach
+                if (limit > worldSize) worldSize = limit
+            }
+            return worldSize
         }
 }

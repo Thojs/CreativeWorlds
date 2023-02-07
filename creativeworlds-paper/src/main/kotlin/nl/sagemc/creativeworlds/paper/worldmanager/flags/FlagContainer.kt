@@ -13,7 +13,7 @@ class FlagContainer(private val world: CreativeWorld, private val section: Confi
     }
     
     operator fun <E : Any> set(flag: Flag<E>, value: E) {
-        section[flag.name] = flag.serialize(value)
+        flag.serialize(value, section.getConfigurationSection(flag.name) ?: section.createSection(flag.name))
         flags[flag] = value
         flag.onChange(world, value)
         update()
@@ -25,7 +25,7 @@ class FlagContainer(private val world: CreativeWorld, private val section: Confi
     
     operator fun <E> get(flag: Flag<E>): E {
         if (!flags.containsKey(flag) && section.contains(flag.name)) {
-            flags[flag] = section.getString(flag.name)?.let { flag.deserialize(it) } ?: flag.defaultValue as Any
+            flags[flag] = section.getConfigurationSection(flag.name)?.let { flag.deserialize(it) } ?: flag.defaultValue as Any
         }
         return flags[flag] as? E ?: flag.defaultValue
     }

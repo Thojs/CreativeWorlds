@@ -3,6 +3,7 @@ package nl.sagemc.creativeworlds.paper.worldmanager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import nl.sagemc.creativeworlds.paper.utils.Config
+import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager.worldSize
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.FlagContainer
 import org.bukkit.*
 import org.bukkit.entity.Player
@@ -27,6 +28,12 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             updateConfig()
             field = value
         }
+
+    init {
+        if (owner.isOnline && owner is Player) {
+            size = owner.worldSize
+        }
+    }
 
     var alias: String? = null
         set(value) {
@@ -75,11 +82,13 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
         // Set world properties
         world.apply {
             difficulty = Difficulty.PEACEFUL
+            time = 8000
 
             setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false)
             setGameRule(GameRule.DO_MOB_SPAWNING, false)
             setGameRule(GameRule.DO_TRADER_SPAWNING, false)
             setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+            setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false)
             setGameRule(GameRule.DO_FIRE_TICK, false)
             setGameRule(GameRule.KEEP_INVENTORY, true)
             setGameRule(GameRule.RANDOM_TICK_SPEED, 0)

@@ -6,17 +6,18 @@ import net.kyori.adventure.title.TitlePart
 import nl.sagemc.creativeworlds.paper.worldmanager.CreativeWorld
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.Flag
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerTeleportEvent
 
 object TitleFlag: Flag<Component>("title", Component.empty()), Listener {
-    override fun serialize(obj: Component): String {
-        return MiniMessage.miniMessage().serialize(obj)
+    override fun serialize(obj: Component, section: ConfigurationSection) {
+        section["message"] = MiniMessage.miniMessage().serialize(obj)
     }
 
-    override fun deserialize(obj: String): Component {
-        return MiniMessage.miniMessage().deserialize(obj)
+    override fun deserialize(obj: ConfigurationSection): Component {
+        return MiniMessage.miniMessage().deserialize(obj.getString("message") ?: "")
     }
 
     override fun onChange(world: CreativeWorld, newValue: Component) {}
