@@ -33,8 +33,8 @@ object NotifyEnterFlag : CommandFlag<Boolean>("notify-enter", false, BooleanPars
 
         if (e.player.isOp && !world.owner.isOp) return
 
-        if (world.flags[this] && world.owner.isOnline) {
-            (world.owner as Player).sendMessage(CreativeWorlds.prefix.append(Component.text("Player ${e.player.name} entered your world.").color(NamedTextColor.GREEN)))
+        if (world.flags[this] && world.owner is Player) {
+            world.owner.sendMessage(CreativeWorlds.prefix.append(Component.text("Player ${e.player.name} entered your world.").color(NamedTextColor.GREEN)))
         }
     }
 }
