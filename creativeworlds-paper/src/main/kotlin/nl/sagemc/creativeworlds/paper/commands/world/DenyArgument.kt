@@ -31,6 +31,7 @@ class DenyArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
                             player.teleport(Bukkit.getServer().worlds.first().spawnLocation)
                         }
                     }
+                    world.updateConfig()
                 }
             }
         }

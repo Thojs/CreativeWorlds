@@ -11,11 +11,14 @@ version = "1.0"
 
 repositories {
     mavenLocal()
+    maven("https://maven.enginehub.org/repo/")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     paperDevBundle("1.19.2-R0.1-SNAPSHOT")
+
+    compileOnly("com.sk89q.worldedit:worldedit-core:7.2.9")
 
     implementation("me.thojs:kommandhandler-core:1.0")
     implementation("me.thojs:kommandhandler-bukkit:1.0")
@@ -40,6 +43,7 @@ bukkit {
     name = "CreativeWorlds"
     main = "nl.sagemc.creativeworlds.paper.CreativeWorlds"
     apiVersion = "1.19"
+    softDepend = listOf("WorldEdit")
     authors = listOf("Thojs", "RobijnenTaart")
 }
 

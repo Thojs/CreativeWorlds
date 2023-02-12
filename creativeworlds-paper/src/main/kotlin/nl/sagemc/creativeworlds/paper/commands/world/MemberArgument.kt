@@ -29,6 +29,7 @@ class MemberArgument(source: CommandSender) : CommandArgument<CommandSender, Str
                         add(player)
                         source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to members.").color(NamedTextColor.GREEN)))
                     }
+                    world.updateConfig()
                 }
             }
         }

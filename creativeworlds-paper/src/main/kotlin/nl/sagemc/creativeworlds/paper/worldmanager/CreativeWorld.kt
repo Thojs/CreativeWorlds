@@ -112,7 +112,17 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
         }
     }
 
-    fun hasRights(p: Player): Boolean {
-        return owner.uniqueId == p.uniqueId || members.contains(p) && owner.isOnline || trusted.contains(p) || p.isOp
+    fun getRights(p: Player): Rights {
+        return if (p.isOp) {
+            Rights.OP
+        } else if (owner.uniqueId == p.uniqueId) {
+            Rights.OWNER
+        } else if (trusted.contains(p)) {
+            Rights.TRUSTEE
+        } else if (members.contains(p)) {
+            Rights.MEMBER
+        } else {
+            Rights.VISITOR
+        }
     }
 }

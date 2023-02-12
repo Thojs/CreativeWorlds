@@ -1,6 +1,5 @@
 package nl.sagemc.creativeworlds.paper.worldmanager
 
-import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager.worldLimit
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
@@ -9,11 +8,21 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.world.WorldUnloadEvent
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 object WorldManager : Listener {
     private val worlds: MutableList<CreativeWorld> = ArrayList()
 
     private val worldDirectory = File(Bukkit.getWorldContainer(), "/CreativeWorlds/")
+
+    init {
+        // Load all world instances
+        worldDirectory.listFiles()?.filter { it.isDirectory }?.forEach {
+            val player = Bukkit.getOfflinePlayer(UUID.fromString(it.name))
+            loadInstances(player)
+        }
+    }
 
     /**
      * Function to get a CreativeWorld instance from a bukkit world.
@@ -99,8 +108,8 @@ object WorldManager : Listener {
     val Player.worldSize: Int
         get() {
             var worldSize = 0
-            this.effectivePermissions.filter { it.value || it.permission.startsWith("creativeworlds.worldlimit.")}.forEach {
-                val limit = it.permission.split("creativeworlds.worldlimit.").getOrNull(1)?.toIntOrNull() ?: return@forEach
+            this.effectivePermissions.filter { it.value || it.permission.startsWith("creativeworlds.worldsize.")}.forEach {
+                val limit = it.permission.split("creativeworlds.worldsize.").getOrNull(1)?.toIntOrNull() ?: return@forEach
                 if (limit > worldSize) worldSize = limit
             }
             return worldSize

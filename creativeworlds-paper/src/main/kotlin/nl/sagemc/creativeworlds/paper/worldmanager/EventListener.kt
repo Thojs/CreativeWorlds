@@ -1,6 +1,7 @@
 package nl.sagemc.creativeworlds.paper.worldmanager
 
 import org.bukkit.entity.Player
+import org.bukkit.event.Cancellable
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -18,47 +19,47 @@ import org.bukkit.event.vehicle.VehicleDamageEvent
 object EventListener : Listener {
     @EventHandler(priority = EventPriority.LOW)
     fun onBlockBreak(e: BlockBreakEvent) {
-        e.isCancelled = !allow(e.player)
+        e.cancelEvent(e.player)
     }
 
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
-        e.isCancelled = !allow(e.player)
+        e.cancelEvent(e.player)
     }
 
     @EventHandler
     fun onInteractEntity(e: PlayerInteractAtEntityEvent) {
-        e.isCancelled = !allow(e.player)
+        e.cancelEvent(e.player)
     }
 
     @EventHandler
     fun onEntityDamage(e: EntityDamageByEntityEvent) {
-        e.isCancelled = !allow(e.damager as? Player ?: return)
+        e.cancelEvent(e.damager as? Player ?: return)
     }
 
     @EventHandler
     fun onVehicleDamage(e: VehicleDamageEvent) {
-        e.isCancelled = !allow(e.attacker as? Player ?: return)
+        e.cancelEvent(e.attacker as? Player ?: return)
     }
 
     @EventHandler
     fun onHangingEntityBreak(e: HangingBreakByEntityEvent) {
-        e.isCancelled = !allow(e.remover as? Player ?: return)
+        e.cancelEvent(e.remover as? Player ?: return)
     }
 
     @EventHandler
     fun onInteract(e: PlayerInteractEvent) {
-        e.isCancelled = !allow(e.player)
+        e.cancelEvent(e.player)
     }
 
     @EventHandler
     fun onDrop(e: PlayerDropItemEvent) {
-        e.isCancelled = !allow(e.player)
+        e.cancelEvent(e.player)
     }
 
     @EventHandler
     fun onPickup(e: EntityPickupItemEvent) {
-        e.isCancelled = !allow(e.entity as? Player ?: return)
+        e.cancelEvent(e.entity as? Player ?: return)
     }
 
     @EventHandler
@@ -68,6 +69,10 @@ object EventListener : Listener {
 
     private fun allow(p: Player): Boolean {
         val world = WorldManager.getWorld(p.world) ?: return true
-        return world.hasRights(p)
+        return world.getRights(p) >= Rights.MEMBER
+    }
+
+    private fun Cancellable.cancelEvent(p: Player) {
+        if (!allow(p)) this.isCancelled = true
     }
 }

@@ -10,14 +10,22 @@ import nl.sagemc.creativeworlds.paper.utils.Utils
 import nl.sagemc.creativeworlds.paper.utils.Utils.miniMessage
 import nl.sagemc.creativeworlds.paper.worldmanager.EventListener
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
+import nl.sagemc.creativeworlds.paper.worldmanager.adapters.WorldEditAdapter
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.FlagContainer
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.defaultflags.*
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.logging.Level
 
 class CreativeWorlds : JavaPlugin() {
     override fun onEnable() {
         // Plugin startup logic
         instance = this
+
+        val hasWorldEdit = server.pluginManager.getPlugin("WorldEdit") != null
+        if (hasWorldEdit) {
+            WorldEditAdapter
+            logger.log(Level.INFO, "Found WorldEdit plugin installed, using WorldEdit hook.")
+        }
 
         Utils.registerEvents(this,
             WorldManager,

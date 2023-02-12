@@ -29,6 +29,7 @@ class TrustArgument(source: CommandSender) : CommandArgument<CommandSender, Stri
                         add(player)
                         source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to trusted.").color(NamedTextColor.GREEN)))
                     }
+                    world.updateConfig()
                 }
             }
         }
