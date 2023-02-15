@@ -15,7 +15,7 @@ class CreateArgument(source: CommandSender) : CommandArgument<CommandSender, Str
         executor {
             if (source !is Player) return@executor
 
-            if (WorldManager.getWorlds(source).size > source.worldLimit) {
+            if (WorldManager.getWorlds(source).size >= source.worldLimit) {
                 source.sendMessage(CreativeWorlds.prefix.append(Component.text("You have reached your world creation limit of ${source.worldLimit}!").color(NamedTextColor.RED)))
                 return@executor
             }
