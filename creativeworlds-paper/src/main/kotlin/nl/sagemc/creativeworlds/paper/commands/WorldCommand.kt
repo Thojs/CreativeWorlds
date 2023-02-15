@@ -10,8 +10,8 @@ import org.bukkit.entity.Player
 object WorldCommand : CommandCreator<CommandSender>() {
     init {
         command("world", "w", "plot", "p") {
-            appendArgument(CreateArgument(source)) // DONE
-            appendArgument(HomeArgument(source)) // DONE
+            appendArgument(CreateArgument(source))
+            appendArgument(HomeArgument(source))
             appendArgument(VisitArgument(source))
 
             if (source is Player && WorldManager.getWorld((source as Player).world) != null) {
@@ -20,13 +20,13 @@ object WorldCommand : CommandCreator<CommandSender>() {
 
             if (testOwner(source)) {
                 source.apply {
-                    appendArgument(TrustArgument(this)) // DONE
-                    appendArgument(MemberArgument(this)) // DONE
-                    appendArgument(FlagArgument(this))
-                    appendArgument(DenyArgument(this)) // DONE
-                    appendArgument(AliasArgument(this)) // DONE
-                    appendArgument(DeleteArgument(this))
-                    appendArgument(SetSpawnArgument(this)) // DONE
+                    appendArgument(TrustArgument(this))
+                    appendArgument(MemberArgument(this))
+                    appendArgument(FlagArgument(this)) // TODO FIX
+                    appendArgument(DenyArgument(this))
+                    appendArgument(AliasArgument(this))
+                    appendArgument(DeleteArgument(this)) // TODO
+                    appendArgument(SetSpawnArgument(this))
                 }
             }
         }
