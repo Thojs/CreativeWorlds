@@ -4,11 +4,11 @@ import nl.sagemc.creativeworlds.paper.worldmanager.CreativeWorld
 import org.bukkit.configuration.ConfigurationSection
 
 class FlagContainer(private val world: CreativeWorld, private val section: ConfigurationSection, val update: () -> Unit) {
-    private val flags = hashMapOf<Flag<*>, Any>()
+    private val flags = hashMapOf<Flag<*>, Any?>()
 
     init {
         globalFlags.forEach {
-            it.defaultValue?.let { it1 -> flags[it] = it1 }
+            flags[it] = it.defaultValue
         }
     }
     
@@ -31,13 +31,7 @@ class FlagContainer(private val world: CreativeWorld, private val section: Confi
     }
 
     fun getCommandFlags(): List<CommandFlag<*>> {
-        val list = mutableListOf<CommandFlag<*>>()
-
-        flags.keys.forEach {
-            if (it is CommandFlag) list += it
-        }
-
-        return list
+        return flags.keys.filterIsInstance<CommandFlag<*>>().toList()
     }
 
     companion object {

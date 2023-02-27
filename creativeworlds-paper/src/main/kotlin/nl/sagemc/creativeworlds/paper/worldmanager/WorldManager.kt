@@ -8,21 +8,12 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.world.WorldUnloadEvent
 import java.io.File
-import java.util.*
 import kotlin.collections.ArrayList
 
 object WorldManager : Listener {
     private val worlds: MutableList<CreativeWorld> = ArrayList()
 
     private val worldDirectory = File(Bukkit.getWorldContainer(), "/CreativeWorlds/")
-
-    init {
-        // Load all world instances
-        worldDirectory.listFiles()?.filter { it.isDirectory }?.forEach {
-            val player = Bukkit.getOfflinePlayer(UUID.fromString(it.name))
-            loadInstances(player)
-        }
-    }
 
     /**
      * Function to get a CreativeWorld instance from a bukkit world.
@@ -77,7 +68,7 @@ object WorldManager : Listener {
     @EventHandler
     fun onWorldUnload(e: WorldUnloadEvent) {
         val world = getWorld(e.world) ?: return
-        world.unload()
+        world.updateConfig()
     }
 
     fun unloadAllWorlds() {

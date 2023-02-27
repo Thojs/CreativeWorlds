@@ -10,23 +10,31 @@ import org.bukkit.entity.Player
 object WorldCommand : CommandCreator<CommandSender>() {
     init {
         command("world", "w", "plot", "p") {
-            appendArgument(CreateArgument(source))
-            appendArgument(HomeArgument(source))
-            appendArgument(VisitArgument(source))
+            arguments.addAll(listOf(
+                CreateArgument(source),
+                HomeArgument(source),
+                VisitArgument(source)
+            ))
 
             if (source is Player && WorldManager.getWorld((source as Player).world) != null) {
-                appendArgument(InfoArgument(source))
+                arguments += InfoArgument(source)
             }
 
             if (testOwner(source)) {
                 source.apply {
-                    appendArgument(TrustArgument(this))
-                    appendArgument(MemberArgument(this))
-                    appendArgument(FlagArgument(this)) // TODO FIX
-                    appendArgument(DenyArgument(this))
-                    appendArgument(AliasArgument(this))
-                    appendArgument(DeleteArgument(this)) // TODO
-                    appendArgument(SetSpawnArgument(this))
+                    arguments.addAll(listOf(
+                        TrustArgument(this),
+                        MemberArgument(this),
+                        FlagArgument(this), // TODO FIX
+                        DenyArgument(this),
+                        AliasArgument(this),
+                        DeleteArgument(this), // TODO
+                        SetSpawnArgument(this)
+                    ))
+                }
+
+                if (source.isOp) {
+                    arguments += UnloadArgument(source)
                 }
             }
         }

@@ -30,7 +30,7 @@ class VisitArgument(source: CommandSender) : CommandArgument<CommandSender, Stri
             executor {
                 if (source !is Player) return@executor
 
-                val player = it[this] ?: return@executor
+                val player = it[this]
 
                 visitWorld(source, player, 1)
             }

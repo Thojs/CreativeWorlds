@@ -1,5 +1,6 @@
 package nl.sagemc.creativeworlds.paper.commands.world
 
+import me.thojs.kommandhandler.bukkit.parsers.OfflinePlayerParser
 import me.thojs.kommandhandler.core.CommandArgument
 import me.thojs.kommandhandler.core.parsers.LiteralParser
 import net.kyori.adventure.text.Component
@@ -26,5 +27,15 @@ class CreateArgument(source: CommandSender) : CommandArgument<CommandSender, Str
             world.load()
             world.bukkitWorld?.spawnLocation?.let { source.teleport(it) }
         }
+
+        if (source.isOp) argument(OfflinePlayerParser id "player") {
+            executor {
+                if (source !is Player) return@executor
+                val world = WorldManager.createWorld(it[this])
+                world.load()
+                world.bukkitWorld?.spawnLocation?.let { loc -> source.teleport(loc) }
+            }
+        }
+
     }
 }

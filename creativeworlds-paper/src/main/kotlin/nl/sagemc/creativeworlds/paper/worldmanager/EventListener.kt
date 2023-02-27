@@ -1,9 +1,11 @@
 package nl.sagemc.creativeworlds.paper.worldmanager
 
+import nl.sagemc.creativeworlds.paper.CreativeWorlds
+import nl.sagemc.creativeworlds.paper.utils.Utils.bukkitRunnable
+import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
@@ -11,13 +13,16 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.hanging.HangingBreakByEntityEvent
+import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.vehicle.VehicleDamageEvent
+import java.util.logging.Level
 
 object EventListener : Listener {
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         e.cancelEvent(e.player)
     }
@@ -65,6 +70,37 @@ object EventListener : Listener {
     @EventHandler
     fun onExplosion(e: EntityExplodeEvent) {
         e.blockList().clear()
+    }
+
+    // World unload stuff
+    @EventHandler
+    fun onWorldMove(e: PlayerChangedWorldEvent) {
+        scheduleUnload(e.from)
+
+        val creativeWorld = WorldManager.getWorld(e.player.world) ?: return
+        if (creativeWorld.unloadTimer?.isCancelled == false) {
+            creativeWorld.unloadTimer?.cancel()
+            creativeWorld.unloadTimer = null
+        }
+    }
+
+    @EventHandler
+    fun onLeave(e: PlayerQuitEvent) {
+        scheduleUnload(e.player.world, e.player)
+    }
+
+    private const val worldUnloadMinutes = 15
+
+    private fun scheduleUnload(world: World, player: Player? = null) {
+        val creativeWorld = WorldManager.getWorld(world) ?: return
+        if (world.players.apply { remove(player) }.isEmpty()) {
+            if (creativeWorld.unloadTimer?.isCancelled == false) creativeWorld.unloadTimer?.cancel()
+            creativeWorld.unloadTimer = bukkitRunnable {
+                CreativeWorlds.instance?.logger?.log(Level.INFO, "No activity detected in world ${creativeWorld.owner.name}:${creativeWorld.id} for $worldUnloadMinutes minutes, unloading it.")
+                creativeWorld.unload()
+            }
+            CreativeWorlds.instance?.let { creativeWorld.unloadTimer?.runTaskLater(it, (20*60*worldUnloadMinutes).toLong()) }
+        }
     }
 
     private fun allow(p: Player): Boolean {

@@ -2,17 +2,22 @@ package nl.sagemc.creativeworlds.paper.worldmanager
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import nl.sagemc.creativeworlds.paper.CreativeWorlds
 import nl.sagemc.creativeworlds.paper.utils.Config
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager.worldSize
 import nl.sagemc.creativeworlds.paper.worldmanager.flags.FlagContainer
 import org.bukkit.*
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitRunnable
 import java.io.File
 import java.util.*
+import java.util.logging.Level
 
 class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     private val worldName = "CreativeWorlds/${owner.uniqueId}/$id"
     private val config: Config = Config(File(Bukkit.getWorldContainer().path + "/" + worldName, "cw_properties.yml"))
+
+    var unloadTimer: BukkitRunnable? = null
 
     var bukkitWorld: World? = null
         private set
@@ -30,9 +35,7 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
         }
 
     init {
-        if (owner.isOnline && owner is Player) {
-            size = owner.worldSize
-        }
+        if (owner.isOnline && owner is Player) size = owner.worldSize
     }
 
     var alias: String? = null
@@ -73,6 +76,8 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     fun load(): Boolean {
         if (bukkitWorld != null) return true
 
+        CreativeWorlds.instance?.logger?.log(Level.INFO, "Starting CreativeWorld loading of ${owner.name}:$id")
+
         val world = WorldCreator(worldName)
             .generateStructures(false)
             .type(WorldType.FLAT)
@@ -92,6 +97,8 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             setGameRule(GameRule.DO_FIRE_TICK, false)
             setGameRule(GameRule.KEEP_INVENTORY, true)
             setGameRule(GameRule.RANDOM_TICK_SPEED, 0)
+            setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false)
+            setGameRule(GameRule.SHOW_DEATH_MESSAGES, false)
 
             // Create world border
             worldBorder.center = Location(world, 8.0, 0.0, 8.0)
@@ -99,20 +106,24 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             worldBorder.warningDistance = -1
         }
 
+        CreativeWorlds.instance?.logger?.log(Level.INFO, "Finished CreativeWorld loading of ${owner.name}:$id")
+
         // Set bukkitWorld variable and return true
         bukkitWorld = world
         return true
     }
 
     fun unload() {
+        CreativeWorlds.instance?.logger?.log(Level.INFO, "Unloading CreativeWorld of ${owner.name}:$id")
         updateConfig()
         bukkitWorld?.let {
+            it.players.forEach { p -> p.teleport(Bukkit.getServer().worlds[0].spawnLocation) }
             Bukkit.unloadWorld(it, true)
             bukkitWorld = null
         }
     }
 
-    fun getRights(p: Player): Rights {
+    fun getRights(p: OfflinePlayer): Rights {
         return if (p.isOp) {
             Rights.OP
         } else if (owner.uniqueId == p.uniqueId) {

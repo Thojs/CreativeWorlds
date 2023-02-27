@@ -14,7 +14,7 @@ class FlagArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
             world?.flags?.getCommandFlags()?.forEach { flag ->
                 argument(LiteralParser(flag.name)) {
                     argument(LiteralParser("set")) {
-                        appendArgument(flag.createArgument(source, world))
+                        arguments += flag.createArgument(source, world)
                     }
 
                     argument(LiteralParser("reset")) {
