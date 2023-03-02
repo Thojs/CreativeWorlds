@@ -8,6 +8,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockFadeEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityExplodeEvent
@@ -22,6 +23,11 @@ import org.bukkit.event.vehicle.VehicleDamageEvent
 import java.util.logging.Level
 
 object EventListener : Listener {
+    @EventHandler
+    fun onCoralChange(e: BlockFadeEvent) {
+        if (e.block.type.name.contains("CORAL")) e.isCancelled = true
+    }
+
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         e.cancelEvent(e.player)
