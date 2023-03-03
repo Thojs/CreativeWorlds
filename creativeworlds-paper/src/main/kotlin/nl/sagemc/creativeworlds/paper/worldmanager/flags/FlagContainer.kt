@@ -7,9 +7,7 @@ class FlagContainer(private val world: CreativeWorld, private val section: Confi
     private val flags = hashMapOf<Flag<*>, Any?>()
 
     init {
-        globalFlags.forEach {
-            flags[it] = it.defaultValue
-        }
+        globalFlags.forEach { get(it) }
     }
     
     operator fun <E : Any> set(flag: Flag<E>, value: E) {

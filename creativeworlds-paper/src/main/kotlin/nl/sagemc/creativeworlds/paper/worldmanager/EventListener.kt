@@ -17,6 +17,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent
 import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.vehicle.VehicleDamageEvent
@@ -26,6 +27,11 @@ object EventListener : Listener {
     @EventHandler
     fun onCoralChange(e: BlockFadeEvent) {
         if (e.block.type.name.contains("CORAL")) e.isCancelled = true
+    }
+
+    @EventHandler
+    fun onEntityInteract(e: PlayerInteractEntityEvent) {
+        e.cancelEvent(e.player)
     }
 
     @EventHandler
