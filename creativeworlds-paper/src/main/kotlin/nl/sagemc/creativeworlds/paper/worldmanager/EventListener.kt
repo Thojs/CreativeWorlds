@@ -19,7 +19,9 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.event.vehicle.VehicleDamageEvent
 import java.util.logging.Level
 
@@ -99,6 +101,16 @@ object EventListener : Listener {
     @EventHandler
     fun onLeave(e: PlayerQuitEvent) {
         scheduleUnload(e.player.world, e.player)
+    }
+
+    @EventHandler
+    fun onMove(e: PlayerMoveEvent) {
+        e.isCancelled = !e.to.world.worldBorder.isInside(e.to)
+    }
+
+    @EventHandler
+    fun onTeleport(e: PlayerTeleportEvent) {
+        e.isCancelled = !e.to.world.worldBorder.isInside(e.to)
     }
 
     private const val worldUnloadMinutes = 15
