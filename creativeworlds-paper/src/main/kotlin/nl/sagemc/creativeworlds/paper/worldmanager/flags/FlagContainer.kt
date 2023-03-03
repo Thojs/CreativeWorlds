@@ -22,7 +22,7 @@ class FlagContainer(private val world: CreativeWorld, private val section: Confi
     }
     
     operator fun <E> get(flag: Flag<E>): E {
-        if (!flags.containsKey(flag) && section.contains(flag.name)) {
+        if (!flags.containsKey(flag)) {
             flags[flag] = section.getConfigurationSection(flag.name)?.let { flag.deserialize(it) } ?: flag.defaultValue as Any
         }
         return flags[flag] as? E ?: flag.defaultValue
