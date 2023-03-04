@@ -36,7 +36,8 @@ class CreativeWorlds : JavaPlugin() {
             NotifyEnterFlag,
             NotifyExitFlag,
             PVPFlag,
-            GuestGamemodeFlag
+            GuestGamemodeFlag,
+            TimeFlag
         )
 
         FlagContainer.globalFlags.addAll(listOf(
@@ -45,7 +46,8 @@ class CreativeWorlds : JavaPlugin() {
             NotifyEnterFlag,
             NotifyExitFlag,
             PVPFlag,
-            GuestGamemodeFlag
+            GuestGamemodeFlag,
+            TimeFlag
         ))
 
         BukkitCommandHandler(this) { sender, exception ->
