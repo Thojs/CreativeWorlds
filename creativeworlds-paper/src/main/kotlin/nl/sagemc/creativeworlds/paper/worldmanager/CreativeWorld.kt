@@ -55,9 +55,9 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     val flags = FlagContainer(this, config.getConfigurationSection("flags") ?: config.createSection("flags"), this::updateConfig)
 
     init {
-        config.getStringList("trusted").map { Bukkit.getOfflinePlayer(UUID.fromString(it)) }.forEach { trusted.add(it) }
-        config.getStringList("members").map { Bukkit.getOfflinePlayer(UUID.fromString(it)) }.forEach { members.add(it) }
-        config.getStringList("denied").map { Bukkit.getOfflinePlayer(UUID.fromString(it)) }.forEach { denied.add(it) }
+        config.getStringList("trusted").forEach { trusted += Bukkit.getOfflinePlayer(UUID.fromString(it)) }
+        config.getStringList("members").forEach { members += Bukkit.getOfflinePlayer(UUID.fromString(it)) }
+        config.getStringList("denied").forEach { denied += Bukkit.getOfflinePlayer(UUID.fromString(it)) }
 
         size = config.getInt("size", size)
         alias = config.getString("alias") ?: ""
@@ -128,9 +128,9 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             Rights.OP
         } else if (owner.uniqueId == p.uniqueId) {
             Rights.OWNER
-        } else if (trusted.contains(p)) {
+        } else if (trusted.find { it.uniqueId == p.uniqueId } != null) {
             Rights.TRUSTEE
-        } else if (members.contains(p)) {
+        } else if (members.find { it.uniqueId == p.uniqueId } != null) {
             Rights.MEMBER
         } else {
             Rights.VISITOR

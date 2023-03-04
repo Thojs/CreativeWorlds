@@ -31,7 +31,7 @@ object NotifyEnterFlag : CommandFlag<Boolean>("notify-enter", false, BooleanPars
 
         val world = WorldManager.getWorld(e.to.world) ?: return
 
-        if (e.player.isOp && !world.owner.isOp) return
+        if (e.player.isOp || world.owner.uniqueId == e.player.uniqueId) return
 
         if (world.flags[this] && world.owner is Player) {
             world.owner.sendMessage(CreativeWorlds.prefix.append(Component.text("Player ${e.player.name} entered your world.").color(NamedTextColor.GREEN)))

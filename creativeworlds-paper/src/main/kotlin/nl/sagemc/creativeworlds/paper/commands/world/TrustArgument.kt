@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import nl.sagemc.creativeworlds.paper.CreativeWorlds
 import nl.sagemc.creativeworlds.paper.worldmanager.WorldManager
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -22,13 +23,14 @@ class TrustArgument(source: CommandSender) : CommandArgument<CommandSender, Stri
                 val player = it[this]
 
                 world?.trusted?.apply {
-                    if (contains(player)) {
+                    if (find { u -> u.uniqueId == player.uniqueId } != null) {
                         remove(player)
                         source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from trusted.").color(NamedTextColor.GREEN)))
                     } else {
                         add(player)
                         source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to trusted.").color(NamedTextColor.GREEN)))
                     }
+
                     world.updateConfig()
                 }
             }

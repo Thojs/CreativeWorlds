@@ -30,7 +30,7 @@ object NotifyExitFlag : CommandFlag<Boolean>("notify-exit", false, BooleanParser
 
         val world = WorldManager.getWorld(e.from.world) ?: return
 
-        if (e.player.isOp && !world.owner.isOp) return
+        if (e.player.isOp || world.owner.uniqueId == e.player.uniqueId) return
 
         if (world.flags[this] &&  world.owner is Player) {
             world.owner.sendMessage(CreativeWorlds.prefix.append(Component.text("Player ${e.player.name} left your world.").color(NamedTextColor.GREEN)))

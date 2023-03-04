@@ -23,7 +23,7 @@ class DenyArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
                 val player = it[this]
 
                 world?.denied?.apply {
-                    if (contains(player)) {
+                    if (find { u -> u.uniqueId == player.uniqueId } != null) {
                         remove(player)
                         source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from denied players.").color(NamedTextColor.GREEN)))
                     } else {
