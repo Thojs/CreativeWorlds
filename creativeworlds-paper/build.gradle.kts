@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm")
-    id("io.papermc.paperweight.userdev") version "1.3.8"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("maven-publish")
@@ -11,12 +10,13 @@ version = "1.0"
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven("https://maven.enginehub.org/repo/")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    paperDevBundle("1.19.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
 
     compileOnly("com.sk89q.worldedit:worldedit-core:7.2.9")
 
@@ -27,7 +27,6 @@ dependencies {
 tasks {
     assemble {
         dependsOn(shadowJar)
-        dependsOn(reobfJar)
     }
 
     compileKotlin {
