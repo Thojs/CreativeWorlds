@@ -6,7 +6,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "nl.sagemc"
+group = "me.thojs"
 version = "1.0"
 
 repositories {
@@ -41,10 +41,10 @@ java {
 
 bukkit {
     name = "CreativeWorlds"
-    main = "nl.sagemc.creativeworlds.paper.CreativeWorlds"
+    main = "me.thojs.creativeworlds.paper.CreativeWorlds"
     apiVersion = "1.19"
     softDepend = listOf("WorldEdit")
-    authors = listOf("Thojs", "RobijnenTaart")
+    authors = listOf("Thojs")
 }
 
 publishing {
