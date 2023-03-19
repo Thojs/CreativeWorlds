@@ -22,10 +22,10 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     var bukkitWorld: World? = null
         private set
 
-    val trusted = mutableListOf<OfflinePlayer>()
-    val members = mutableListOf<OfflinePlayer>()
+    val trusted = OfflinePlayerContainer("trusted")
+    val members = OfflinePlayerContainer("members")
 
-    val denied = mutableListOf<OfflinePlayer>()
+    val denied = OfflinePlayerContainer("denied")
 
     var size: Int = 15
         set(value) {
@@ -33,10 +33,6 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             updateConfig()
             field = value
         }
-
-    init {
-        if (owner.isOnline && owner is Player) size = owner.worldSize
-    }
 
     var alias: String? = null
         set(value) {
@@ -67,9 +63,10 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     fun updateConfig() {
         config["owner"] = owner.uniqueId.toString()
 
-        config["trusted"] = trusted.map { it.uniqueId.toString() }
-        config["members"] = members.map { it.uniqueId.toString() }
-        config["denied"] = denied.map { it.uniqueId.toString() }
+        trusted.update()
+        members.update()
+        denied.update()
+
         config.save()
     }
 
@@ -77,6 +74,8 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
         if (bukkitWorld != null) return true
 
         CreativeWorlds.instance?.logger?.log(Level.INFO, "Starting CreativeWorld loading of ${owner.name}:$id")
+
+        if (owner.isOnline && Bukkit.getPlayer(owner.uniqueId) != null) size = Bukkit.getPlayer(owner.uniqueId)?.worldSize ?: size
 
         val world = WorldCreator(worldName)
             .generateStructures(false)
@@ -114,13 +113,14 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
     }
 
     fun unload() {
-        CreativeWorlds.instance?.logger?.log(Level.INFO, "Unloading CreativeWorld of ${owner.name}:$id")
+        CreativeWorlds.instance?.logger?.log(Level.INFO, "Started unloading CreativeWorld of ${owner.name}:$id")
         updateConfig()
         bukkitWorld?.let {
             it.players.forEach { p -> p.teleport(Bukkit.getServer().worlds[0].spawnLocation) }
             Bukkit.unloadWorld(it, true)
-            bukkitWorld = null
         }
+        bukkitWorld = null
+        CreativeWorlds.instance?.logger?.log(Level.INFO, "Finished unloading CreativeWorld of ${owner.name}:$id")
     }
 
     fun getRights(p: OfflinePlayer): Rights {
@@ -128,12 +128,40 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
             Rights.OP
         } else if (owner.uniqueId == p.uniqueId) {
             Rights.OWNER
-        } else if (trusted.find { it.uniqueId == p.uniqueId } != null) {
+        } else if (p in trusted) {
             Rights.TRUSTEE
-        } else if (members.find { it.uniqueId == p.uniqueId } != null) {
+        } else if (p in members) {
             Rights.MEMBER
         } else {
             Rights.VISITOR
+        }
+    }
+
+    inner class OfflinePlayerContainer(private val key: String) {
+        private val container = config.getStringList(key).map { UUID.fromString(it) }.toMutableSet()
+
+        operator fun plusAssign(p: OfflinePlayer) {
+            container.add(p.uniqueId)
+        }
+
+        operator fun minusAssign(p: OfflinePlayer) {
+            container.remove(p.uniqueId)
+        }
+
+        operator fun remAssign(p: OfflinePlayer) {
+            if (contains(p)) minusAssign(p) else plusAssign(p)
+        }
+
+        operator fun contains(p: OfflinePlayer): Boolean {
+            return p.uniqueId in container
+        }
+
+        fun update() {
+            config.set(key, container.map { it.toString() })
+        }
+
+        override fun toString(): String {
+            return container.map { Bukkit.getOfflinePlayer(it).name }.joinToString(", ")
         }
     }
 }

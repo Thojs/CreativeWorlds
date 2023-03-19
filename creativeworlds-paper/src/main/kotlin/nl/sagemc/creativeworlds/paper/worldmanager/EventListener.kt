@@ -103,6 +103,7 @@ object EventListener : Listener {
         scheduleUnload(e.player.world, e.player)
     }
 
+    // Prevent users from leaving the world border.
     @EventHandler
     fun onMove(e: PlayerMoveEvent) {
         e.isCancelled = !e.to.world.worldBorder.isInside(e.to)

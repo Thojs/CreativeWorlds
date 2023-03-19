@@ -17,22 +17,25 @@ class TrustArgument(source: CommandSender) : CommandArgument<CommandSender, Stri
             executor {
                 if (source !is Player) return@executor
 
-                val world = WorldManager.getWorld(source.world)
+                val world = WorldManager.getWorld(source.world) ?: return@executor
 
                 // Add/Remove Trusted player
                 val player = it[this]
 
-                world?.trusted?.apply {
-                    if (find { u -> u.uniqueId == player.uniqueId } != null) {
-                        remove(player)
-                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from trusted.").color(NamedTextColor.GREEN)))
-                    } else {
-                        add(player)
-                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to trusted.").color(NamedTextColor.GREEN)))
-                    }
+                val trusted = world.trusted
 
-                    world.updateConfig()
+                if (player in trusted) {
+                    trusted -= player
+                    source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from trusted.").color(NamedTextColor.GREEN)))
+                } else {
+                    trusted += player
+                    world.members -= player
+                    world.denied -= player
+
+                    source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to trusted.").color(NamedTextColor.GREEN)))
                 }
+
+                world.updateConfig()
             }
         }
     }

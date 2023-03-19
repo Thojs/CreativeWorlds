@@ -16,21 +16,24 @@ class MemberArgument(source: CommandSender) : CommandArgument<CommandSender, Str
             executor {
                 if (source !is Player) return@executor
 
-                val world = WorldManager.getWorld(source.world)
+                val world = WorldManager.getWorld(source.world) ?: return@executor
 
                 // Add/Remove member
                 val player = it[this]
 
-                world?.members?.apply {
-                    if (find { u -> u.uniqueId == player.uniqueId } != null) {
-                        remove(player)
-                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from members.").color(NamedTextColor.GREEN)))
-                    } else {
-                        add(player)
-                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to members.").color(NamedTextColor.GREEN)))
-                    }
-                    world.updateConfig()
+                val members = world.members
+
+                if (player in members) {
+                    members -= player
+                    source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from members.").color(NamedTextColor.GREEN)))
+                } else {
+                    members += player
+                    world.trusted -= player
+                    world.denied -= player
+
+                    source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to members.").color(NamedTextColor.GREEN)))
                 }
+                world.updateConfig()
             }
         }
     }

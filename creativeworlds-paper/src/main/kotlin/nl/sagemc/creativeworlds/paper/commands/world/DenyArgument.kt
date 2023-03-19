@@ -18,28 +18,32 @@ class DenyArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
             executor {
                 if (source !is Player) return@executor
 
-                val world = WorldManager.getWorld(source.world)
+                val world = WorldManager.getWorld(source.world) ?: return@executor
 
                 val player = it[this]
 
-                world?.denied?.apply {
-                    if (find { u -> u.uniqueId == player.uniqueId } != null) {
-                        remove(player)
-                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from denied players.").color(NamedTextColor.GREEN)))
-                    } else {
-                        if (world.getRights(player) >= Rights.OWNER) {
-                            source.sendMessage(CreativeWorlds.prefix.append(Component.text("You are unable to ban ${player.name}.").color(NamedTextColor.RED)))
-                            return@apply
-                        }
-                        add(player)
-                        if (player is Player && player.location.world == world.bukkitWorld) {
-                            player.sendMessage(CreativeWorlds.prefix.append(Component.text("You are denied from this plot.").color(NamedTextColor.RED)))
-                            player.teleport(Bukkit.getServer().worlds.first().spawnLocation)
-                        }
-                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to denied players.").color(NamedTextColor.GREEN)))
+                val denied = world.denied
+
+                if (player in denied) {
+                    denied -= player
+                    source.sendMessage(CreativeWorlds.prefix.append(Component.text("Removed ${player.name} from denied players.").color(NamedTextColor.GREEN)))
+                } else {
+                    if (world.getRights(player) >= Rights.OWNER) {
+                        source.sendMessage(CreativeWorlds.prefix.append(Component.text("You are unable to ban ${player.name}.").color(NamedTextColor.RED)))
+                        return@executor
                     }
-                    world.updateConfig()
+
+                    denied += player
+                    world.trusted -= player
+                    world.members -= player
+
+                    if (player is Player && player.location.world == world.bukkitWorld) {
+                        player.sendMessage(CreativeWorlds.prefix.append(Component.text("You are denied from this plot.").color(NamedTextColor.RED)))
+                        player.teleport(Bukkit.getServer().worlds.first().spawnLocation)
+                    }
+                    source.sendMessage(CreativeWorlds.prefix.append(Component.text("Added ${player.name} to denied players.").color(NamedTextColor.GREEN)))
                 }
+                world.updateConfig()
             }
         }
     }
