@@ -1,15 +1,25 @@
 package me.thojs.creativeworlds.paper.commands
 
+import me.thojs.creativeworlds.paper.CreativeWorlds
 import me.thojs.kommandhandler.core.CommandCreator
 import me.thojs.creativeworlds.paper.commands.world.*
 import me.thojs.creativeworlds.paper.worldmanager.Rights
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
+import me.thojs.kommandhandler.core.parsers.LiteralParser
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 object WorldCommand : CommandCreator<CommandSender>() {
     init {
         command("world", "w", "plot", "p") {
+            argument(LiteralParser("version")) {
+                executor {
+                    source.sendMessage(CreativeWorlds.prefix.append(Component.text("This server is running CreativeWorlds version ${CreativeWorlds.instance?.description?.version ?: "unknown"}").color(NamedTextColor.GREEN)))
+                }
+            }
+
             arguments.addAll(listOf(
                 CreateArgument(source),
                 HomeArgument(source),
@@ -20,7 +30,7 @@ object WorldCommand : CommandCreator<CommandSender>() {
                 arguments += InfoArgument(source)
             }
 
-            if (me.thojs.creativeworlds.paper.commands.WorldCommand.testOwner(source)) {
+            if (testOwner(source)) {
                 source.apply {
                     arguments.addAll(listOf(
                         TrustArgument(this),

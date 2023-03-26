@@ -1,5 +1,6 @@
 package me.thojs.creativeworlds.paper
 
+import me.thojs.creativeworlds.paper.commands.WorldCommand
 import me.thojs.kommandhandler.bukkit.BukkitCommandHandler
 import me.thojs.kommandhandler.core.exceptions.ArgumentParseException
 import me.thojs.kommandhandler.core.exceptions.NoExecutorException
@@ -51,15 +52,14 @@ class CreativeWorlds : JavaPlugin() {
 
         BukkitCommandHandler(this) { sender, exception ->
             sender.sendMessage(
-                prefix.append(
-                when (exception) {
+                prefix.append(when (exception) {
                     is NoExecutorException -> Component.text("Could not find an executor with the provided arguments.")
                     is ArgumentParseException -> Component.text("Could not parse argument ${exception.index+1}")
                     else -> Component.text("Unknown error occurred whilst executing the command.")
                 }.color(NamedTextColor.RED)
             ))
         }.registerCommands(
-            me.thojs.creativeworlds.paper.commands.WorldCommand
+            WorldCommand
         )
     }
 
@@ -74,6 +74,6 @@ class CreativeWorlds : JavaPlugin() {
     companion object {
         var instance: CreativeWorlds? = null
 
-        val prefix = miniMessage("<gold>Sage<yellow>Creative</yellow>Worlds</gold> <dark_gray>|></dark_gray> ")
+        val prefix = miniMessage("<gold>Creative<yellow>Worlds</yellow> <dark_gray>|></dark_gray> ")
     }
 }
