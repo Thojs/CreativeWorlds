@@ -1,0 +1,16 @@
+[versions]
+paper = "1.21.8-R0.1-SNAPSHOT"
+kotlin = "2.2.0"
+pluginyml-paper = "0.7.1"
+shadow = "9.0.0-beta13"
+worldedit = "7.2.9"
+
+[libraries]
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
+
+# Mics
+worldedit = { module = "com.sk89q.worldedit:worldedit-core", version.ref = "worldedit" }
+
+[plugins]
+pluginyml-paper = { id = "de.eldoria.plugin-yml.paper", version.ref = "pluginyml-paper" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

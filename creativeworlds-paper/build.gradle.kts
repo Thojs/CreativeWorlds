@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm")
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    alias(libs.plugins.pluginyml.paper)
+    alias(libs.plugins.shadow)
     id("maven-publish")
 }
 
@@ -15,10 +15,10 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    implementation(kotlin("stdlib"))
+    compileOnly(libs.paper.api)
 
-    compileOnly("com.sk89q.worldedit:worldedit-core:7.2.9")
+    compileOnly(libs.worldedit)
 
     implementation("me.thojs:kommandhandler-core:1.0")
     implementation("me.thojs:kommandhandler-bukkit:1.0")
@@ -31,15 +31,20 @@ tasks {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
-bukkit {
+paper {
     name = "CreativeWorlds"
     main = "me.thojs.creativeworlds.paper.CreativeWorlds"
-    apiVersion = "1.19"
-    softDepend = listOf("WorldEdit")
+    apiVersion = "1.21"
     authors = listOf("Thojs")
+
+    serverDependencies {
+        register("WorldEdit") {
+            required = false
+        }
+    }
 }
 
 publishing {
