@@ -28,10 +28,6 @@ tasks {
     assemble {
         dependsOn(shadowJar)
     }
-
-    compileKotlin {
-        kotlinOptions.jvmTarget = JavaLanguageVersion.of(17).toString()
-    }
 }
 
 java {
