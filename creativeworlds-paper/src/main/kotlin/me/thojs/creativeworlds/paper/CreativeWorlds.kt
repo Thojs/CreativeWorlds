@@ -5,6 +5,9 @@ import me.thojs.creativeworlds.paper.utils.Utils.miniMessage
 import me.thojs.creativeworlds.paper.listeners.EventListener
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
 import me.thojs.creativeworlds.paper.adapters.WorldEditAdapter
+import me.thojs.creativeworlds.paper.commands.CreativeWorldsCommand
+import me.thojs.creativeworlds.paper.commands.WorldCommand
+import me.thojs.creativeworlds.paper.commands.exceptions.CreativeWorldsExceptionHandler
 import me.thojs.creativeworlds.paper.worldmanager.flags.FlagContainer
 import me.thojs.creativeworlds.paper.worldmanager.flags.defaultflags.*
 import org.bukkit.plugin.java.JavaPlugin
@@ -66,23 +69,10 @@ class CreativeWorlds : JavaPlugin() {
             GuestGamemodeFlag,
             TimeFlag
         ))
-
-        BukkitCommandHandler(this) { sender, exception ->
-            sender.sendMessage(
-                prefix.append(when (exception) {
-                    is NoExecutorException -> Component.text("Could not find an executor with the provided arguments.")
-                    is ArgumentParseException -> Component.text("Could not parse argument ${exception.index+1}")
-                    else -> Component.text("Unknown error occurred whilst executing the command.")
-                }.color(NamedTextColor.RED)
-            ))
-        }.registerCommands(
-            WorldCommand
-        )
     }
 
     override fun onDisable() {
         // Plugin shutdown logic
-
         WorldManager.unloadAllWorlds()
 
         instance = null
