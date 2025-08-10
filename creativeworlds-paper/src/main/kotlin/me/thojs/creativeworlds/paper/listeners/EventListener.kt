@@ -1,7 +1,9 @@
-package me.thojs.creativeworlds.paper.worldmanager
+package me.thojs.creativeworlds.paper.listeners
 
 import me.thojs.creativeworlds.paper.CreativeWorlds
-import me.thojs.creativeworlds.paper.utils.Utils.bukkitRunnable
+import me.thojs.creativeworlds.paper.utils.Utils
+import me.thojs.creativeworlds.paper.worldmanager.Rights
+import me.thojs.creativeworlds.paper.worldmanager.WorldManager
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
@@ -121,8 +123,11 @@ object EventListener : Listener {
         val creativeWorld = WorldManager.getWorld(world) ?: return
         if (world.players.apply { remove(player) }.isEmpty()) {
             if (creativeWorld.unloadTimer?.isCancelled == false) creativeWorld.unloadTimer?.cancel()
-            creativeWorld.unloadTimer = bukkitRunnable {
-                CreativeWorlds.instance?.logger?.log(Level.INFO, "No activity detected in world ${creativeWorld.owner.name}:${creativeWorld.id} for $worldUnloadMinutes minutes, unloading it.")
+            creativeWorld.unloadTimer = Utils.bukkitRunnable {
+                CreativeWorlds.instance?.logger?.log(
+                    Level.INFO,
+                    "No activity detected in world ${creativeWorld.owner.name}:${creativeWorld.id} for $worldUnloadMinutes minutes, unloading it."
+                )
                 creativeWorld.unload()
             }
             CreativeWorlds.instance?.let { creativeWorld.unloadTimer?.runTaskLater(it, (20*60*worldUnloadMinutes).toLong()) }

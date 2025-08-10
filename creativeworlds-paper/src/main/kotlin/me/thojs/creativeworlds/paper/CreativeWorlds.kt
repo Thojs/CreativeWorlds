@@ -8,9 +8,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import me.thojs.creativeworlds.paper.utils.Utils
 import me.thojs.creativeworlds.paper.utils.Utils.miniMessage
-import me.thojs.creativeworlds.paper.worldmanager.EventListener
+import me.thojs.creativeworlds.paper.listeners.EventListener
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
-import me.thojs.creativeworlds.paper.worldmanager.adapters.WorldEditAdapter
+import me.thojs.creativeworlds.paper.adapters.WorldEditAdapter
 import me.thojs.creativeworlds.paper.worldmanager.flags.FlagContainer
 import me.thojs.creativeworlds.paper.worldmanager.flags.defaultflags.*
 import org.bukkit.plugin.java.JavaPlugin
@@ -23,7 +23,7 @@ class CreativeWorlds : JavaPlugin() {
 
         val hasWorldEdit = server.pluginManager.getPlugin("WorldEdit") != null
         if (hasWorldEdit) {
-            WorldEditAdapter
+            WorldEditAdapter.register()
             logger.log(Level.INFO, "Found WorldEdit plugin installed, using WorldEdit hook.")
         }
 
