@@ -6,14 +6,15 @@ import me.thojs.creativeworlds.paper.CreativeWorlds
 import me.thojs.creativeworlds.paper.utils.Config
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager.worldSize
 import me.thojs.creativeworlds.paper.worldmanager.flags.FlagContainer
+import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.audience.ForwardingAudience
 import org.bukkit.*
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import java.io.File
 import java.util.*
 import java.util.logging.Level
 
-class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
+class CreativeWorld(val owner: OfflinePlayer, val id: Int): ForwardingAudience {
     private val worldName = "CreativeWorlds/${owner.uniqueId}/$id"
     private val config: Config = Config(File(Bukkit.getWorldContainer().path + "/" + worldName, "cw_properties.yml"))
 
@@ -137,6 +138,10 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
         }
     }
 
+    override fun audiences(): Iterable<Audience> {
+        return bukkitWorld?.audiences() ?: emptyList()
+    }
+
     inner class OfflinePlayerContainer(private val key: String) {
         private val container = config.getStringList(key).map { UUID.fromString(it) }.toMutableSet()
 
@@ -161,7 +166,7 @@ class CreativeWorld(val owner: OfflinePlayer, val id: Int) {
         }
 
         override fun toString(): String {
-            return container.map { Bukkit.getOfflinePlayer(it).name }.joinToString(", ")
+            return container.joinToString(", ") { Bukkit.getOfflinePlayer(it).name.toString() }
         }
     }
 }
