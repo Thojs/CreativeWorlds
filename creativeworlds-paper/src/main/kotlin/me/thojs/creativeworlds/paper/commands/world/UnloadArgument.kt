@@ -1,17 +1,24 @@
 package me.thojs.creativeworlds.paper.commands.world
 
-import me.thojs.kommandhandler.core.CommandArgument
-import me.thojs.kommandhandler.core.parsers.LiteralParser
+import me.thojs.creativeworlds.paper.commands.BaseCommand
+import me.thojs.creativeworlds.paper.commands.exceptions.NotInWorldException
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.kotlin.MutableCommandBuilder
+import org.incendo.cloud.paper.util.sender.PlayerSource
+import org.incendo.cloud.paper.util.sender.Source
 
-class UnloadArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("unload")) {
-    init {
-        executor {
-            if (source !is Player) return@executor
-            val world = WorldManager.getWorld(source.world) ?: return@executor
-            world.unload()
+object UnloadArgument : BaseCommand("unload") {
+    override fun build(builder: MutableCommandBuilder<Source>) {
+        builder.registerCopy {
+            senderType(PlayerSource::class)
+            permission("creativeworlds.command.unload")
+
+            handler {
+                val source = it.sender().source() as Player
+                val world = WorldManager.getWorld(source.world) ?: throw NotInWorldException()
+                world.unload()
+            }
         }
     }
 }

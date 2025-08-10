@@ -1,30 +1,35 @@
 package me.thojs.creativeworlds.paper.commands.world
 
-import me.thojs.kommandhandler.core.CommandArgument
-import me.thojs.kommandhandler.core.parsers.LiteralParser
+import me.thojs.creativeworlds.paper.commands.BaseCommand
+import me.thojs.creativeworlds.paper.commands.exceptions.NotInWorldException
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import me.thojs.creativeworlds.paper.utils.Utils.miniMessage
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.kotlin.MutableCommandBuilder
+import org.incendo.cloud.paper.util.sender.PlayerSource
+import org.incendo.cloud.paper.util.sender.Source
 
-class InfoArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("info", "i")) {
-    init {
-        executor {
-            if (source !is Player) return@executor
+object InfoArgument : BaseCommand("info") {
+    override fun build(builder: MutableCommandBuilder<Source>) {
+        builder.registerCopy {
+            senderType(PlayerSource::class)
 
-            val world = WorldManager.getWorld(source.world) ?: return@executor
+            handler {
+                val source = it.sender().source() as Player
+                val world = WorldManager.getWorld(source.world) ?: throw NotInWorldException()
 
-            source.apply {
-                val title = miniMessage("<dark_gray><strikethrough>--------[</strikethrough> <gold>World</gold><yellow>Info</yellow> <strikethrough>]--------")
-                sendMessage(title)
-                sendMessage(addTag("Owner", world.owner.name ?: "Unknown"))
-                sendMessage(addTag("Alias", world.alias))
-                sendMessage(addTag("Trusted", world.trusted.toString()))
-                sendMessage(addTag("Members", world.members.toString()))
-                sendMessage(addTag("Denied", world.denied.toString()))
-                sendMessage(title)
+                source.apply {
+                    val title = miniMessage("<dark_gray><strikethrough>--------[</strikethrough> <gold>World</gold><yellow>Info</yellow> <strikethrough>]--------")
+                    sendMessage(title)
+                    sendMessage(addTag("Owner", world.owner.name ?: "Unknown"))
+                    sendMessage(addTag("Alias", world.alias))
+                    sendMessage(addTag("Trusted", world.trusted.toString()))
+                    sendMessage(addTag("Members", world.members.toString()))
+                    sendMessage(addTag("Denied", world.denied.toString()))
+                    sendMessage(title)
+                }
             }
         }
     }

@@ -1,17 +1,19 @@
 package me.thojs.creativeworlds.paper.commands.world
 
-import me.thojs.kommandhandler.core.CommandArgument
-import me.thojs.kommandhandler.core.parsers.LiteralParser
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import me.thojs.creativeworlds.paper.CreativeWorlds
-import org.bukkit.command.CommandSender
+import me.thojs.creativeworlds.paper.commands.BaseCommand
+import org.incendo.cloud.kotlin.MutableCommandBuilder
+import org.incendo.cloud.paper.util.sender.Source
 
 // TODO
-class DeleteArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("delete")) {
-    init {
-        executor {
-            source.sendMessage(me.thojs.creativeworlds.paper.CreativeWorlds.prefix.append(Component.text("This sub-command is not implemented yet!").color(NamedTextColor.RED)))
+object DeleteArgument : BaseCommand("delete") {
+    override fun build(builder: MutableCommandBuilder<Source>) {
+        builder.registerCopy {
+            handler {
+                it.sender().source().sendMessage(CreativeWorlds.prefix.append(Component.text("This sub-command is not implemented yet!", NamedTextColor.RED)))
+            }
         }
     }
 }

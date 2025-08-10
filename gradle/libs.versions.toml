@@ -1,12 +1,18 @@
 [versions]
 paper = "1.21.8-R0.1-SNAPSHOT"
 kotlin = "2.2.0"
+cloud = "2.0.0-beta.10"
 pluginyml-paper = "0.7.1"
 shadow = "9.0.0-beta13"
 worldedit = "7.2.9"
 
 [libraries]
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
+
+# Cloud
+cloud-cooldown = { module = "org.incendo:cloud-processors-cooldown", version = "1.0.0-rc.1" }
+cloud-kotlin = { module = "org.incendo:cloud-kotlin-extensions", version = "2.0.0" }
+cloud-paper = { module = "org.incendo:cloud-paper", version.ref = "cloud" }
 
 # Mics
 worldedit = { module = "com.sk89q.worldedit:worldedit-core", version.ref = "worldedit" }

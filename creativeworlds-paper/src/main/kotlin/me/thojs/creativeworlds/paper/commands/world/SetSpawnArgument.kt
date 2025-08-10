@@ -1,18 +1,26 @@
 package me.thojs.creativeworlds.paper.commands.world
 
-import me.thojs.kommandhandler.core.CommandArgument
-import me.thojs.kommandhandler.core.parsers.LiteralParser
+import me.thojs.creativeworlds.paper.commands.BaseCommand
+import me.thojs.creativeworlds.paper.commands.exceptions.NotInWorldException
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.kotlin.MutableCommandBuilder
+import org.incendo.cloud.paper.util.sender.PlayerSource
+import org.incendo.cloud.paper.util.sender.Source
 
-class SetSpawnArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("setspawn")) {
-    init {
-        executor {
-            if (source !is Player) return@executor
+object SetSpawnArgument : BaseCommand("setspawn") {
+    override fun build(builder: MutableCommandBuilder<Source>) {
+        builder.registerCopy {
+            senderType(PlayerSource::class)
 
-            val world = WorldManager.getWorld(source.world)
-            world?.bukkitWorld?.spawnLocation = source.location
+            handler {
+                val source = it.sender().source() as Player
+                val world = WorldManager.getWorld(source.world) ?: throw NotInWorldException()
+
+                testWorldRights(world, source)
+
+                world.bukkitWorld?.spawnLocation = source.location
+            }
         }
     }
 }

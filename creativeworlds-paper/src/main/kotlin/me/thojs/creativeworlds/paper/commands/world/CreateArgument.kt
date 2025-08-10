@@ -1,41 +1,40 @@
 package me.thojs.creativeworlds.paper.commands.world
 
-import me.thojs.kommandhandler.bukkit.parsers.OfflinePlayerParser
-import me.thojs.kommandhandler.core.CommandArgument
-import me.thojs.kommandhandler.core.parsers.LiteralParser
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import me.thojs.creativeworlds.paper.CreativeWorlds
+import me.thojs.creativeworlds.paper.commands.BaseCommand
+import me.thojs.creativeworlds.paper.commands.exceptions.WorldLimitReachedException
+import me.thojs.creativeworlds.paper.worldmanager.CreativeWorld
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager.worldLimit
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.kotlin.MutableCommandBuilder
+import org.incendo.cloud.paper.util.sender.PlayerSource
+import org.incendo.cloud.paper.util.sender.Source
 
-class CreateArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("create")) {
-    init {
-        executor {
-            if (source !is Player) return@executor
+object CreateArgument : BaseCommand("create") {
+    override fun build(builder: MutableCommandBuilder<Source>) {
+        builder.registerCopy {
+            senderType(PlayerSource::class)
 
-            if (WorldManager.getWorlds(source).size >= source.worldLimit) {
-                source.sendMessage(CreativeWorlds.prefix.append(Component.text("You have reached your world creation limit of ${source.worldLimit}!").color(NamedTextColor.RED)))
-                return@executor
-            }
+            handler {
+                val source = it.sender().source() as Player
 
-            source.sendMessage(CreativeWorlds.prefix.append(Component.text("Creating a new world, we will teleport you when the world has been loaded.").color(NamedTextColor.GREEN)))
+                if (WorldManager.getWorlds(source).size >= source.worldLimit) {
+                    throw WorldLimitReachedException(source.worldLimit)
+                }
 
-            val world = WorldManager.createWorld(source)
-            world.load()
-            world.bukkitWorld?.spawnLocation?.let { source.teleport(it) }
-        }
-
-        if (source.isOp) argument(OfflinePlayerParser id "player") {
-            executor {
-                if (source !is Player) return@executor
-                val world = WorldManager.createWorld(it[this])
-                world.load()
-                world.bukkitWorld?.spawnLocation?.let { loc -> source.teleport(loc) }
+                source.sendMessage(CreativeWorlds.prefix.append(Component.text("Creating a new world, you will be teleported when the world has been loaded.").color(NamedTextColor.GREEN)))
+                val spawnLocation = createWorld(source).bukkitWorld?.spawnLocation ?: return@handler
+                source.teleportAsync(spawnLocation)
             }
         }
+    }
 
+    fun createWorld(player: Player): CreativeWorld {
+        val world = WorldManager.createWorld(player)
+        world.load()
+        return world
     }
 }

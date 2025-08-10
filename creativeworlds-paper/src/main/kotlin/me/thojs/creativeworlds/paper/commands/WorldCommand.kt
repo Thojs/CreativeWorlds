@@ -1,52 +1,34 @@
 package me.thojs.creativeworlds.paper.commands
 
-import me.thojs.creativeworlds.paper.CreativeWorlds
-import me.thojs.kommandhandler.core.CommandCreator
 import me.thojs.creativeworlds.paper.commands.world.*
 import me.thojs.creativeworlds.paper.worldmanager.Rights
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
-import me.thojs.kommandhandler.core.parsers.LiteralParser
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.kotlin.extension.commandBuilder
+import org.incendo.cloud.paper.PaperCommandManager
+import org.incendo.cloud.paper.util.sender.Source
 
-object WorldCommand : CommandCreator<CommandSender>() {
-    init {
-        command("world", "w", "plot", "p") {
-            argument(LiteralParser("version")) {
-                executor {
-                    source.sendMessage(CreativeWorlds.prefix.append(Component.text("This server is running CreativeWorlds version ${CreativeWorlds.instance?.description?.version ?: "unknown"}").color(NamedTextColor.GREEN)))
-                }
-            }
+object WorldCommand {
+    private val arguments = listOf(
+        AliasArgument,
+        CreateArgument,
+        DeleteArgument,
+        DenyArgument,
+        FlagArgument,
+        HomeArgument,
+        InfoArgument,
+        MemberArgument,
+        SetSpawnArgument,
+        UnloadArgument,
+        VisitArgument
+    )
 
-            arguments.addAll(listOf(
-                CreateArgument(source),
-                HomeArgument(source),
-                VisitArgument(source)
-            ))
-
-            if (source is Player && WorldManager.getWorld((source as Player).world) != null) {
-                arguments += InfoArgument(source)
-            }
-
-            if (testOwner(source)) {
-                source.apply {
-                    arguments.addAll(listOf(
-                        TrustArgument(this),
-                        MemberArgument(this),
-                        FlagArgument(this),
-                        DenyArgument(this),
-                        AliasArgument(this),
-                        DeleteArgument(this), // TODO
-                        SetSpawnArgument(this)
-                    ))
-                }
-
-                if (source.isOp) {
-                    arguments += UnloadArgument(source)
-                }
-            }
+    fun register(manager: PaperCommandManager<Source>) {
+        // TODO permissions
+        arguments.forEach {
+            val builder = manager.commandBuilder("world", aliases = arrayOf("w", "plot", "p")) {}
+            it.register(builder)
         }
     }
 

@@ -1,3 +1,5 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission
+
 plugins {
     kotlin("jvm")
     alias(libs.plugins.pluginyml.paper)
@@ -6,7 +8,7 @@ plugins {
 }
 
 group = "me.thojs"
-version = "1.0.1"
+version = "1.1.0-SNAPSHOT"
 
 repositories {
     mavenLocal()
@@ -20,8 +22,8 @@ dependencies {
 
     compileOnly(libs.worldedit)
 
-    implementation("me.thojs:kommandhandler-core:1.0")
-    implementation("me.thojs:kommandhandler-bukkit:1.0")
+    implementation(libs.cloud.paper)
+    implementation(libs.cloud.kotlin)
 }
 
 tasks {
@@ -43,6 +45,12 @@ paper {
     serverDependencies {
         register("WorldEdit") {
             required = false
+        }
+    }
+
+    permissions {
+        create("creativeworlds.command.unload") {
+            default = Permission.Default.OP
         }
     }
 }

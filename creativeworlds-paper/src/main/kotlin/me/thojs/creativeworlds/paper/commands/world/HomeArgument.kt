@@ -1,30 +1,27 @@
 package me.thojs.creativeworlds.paper.commands.world
 
-import me.thojs.kommandhandler.core.CommandArgument
-import me.thojs.kommandhandler.core.parsers.IntegerParser
-import me.thojs.kommandhandler.core.parsers.LiteralParser
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import me.thojs.creativeworlds.paper.CreativeWorlds
+import me.thojs.creativeworlds.paper.commands.BaseCommand
 import me.thojs.creativeworlds.paper.worldmanager.WorldManager
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.kotlin.MutableCommandBuilder
+import org.incendo.cloud.paper.util.sender.PlayerSource
+import org.incendo.cloud.paper.util.sender.Source
+import org.incendo.cloud.parser.standard.IntegerParser
 
-class HomeArgument(source: CommandSender) : CommandArgument<CommandSender, String>(source, LiteralParser("home", "h")) {
-    init {
-        // (plot-id)
-        argument(IntegerParser id "id") {
-            executor {
-                if (source !is Player) return@executor
+object HomeArgument : BaseCommand("home") {
+    override fun build(builder: MutableCommandBuilder<Source>) {
+        builder.registerCopy {
+            senderType(PlayerSource::class)
+            optional("id", IntegerParser.integerParser())
 
-                val index = it[this]
-                goToPlot(source, index)
+            handler {
+                val player = it.sender().source() as Player
+                val id = it.getOrDefault("id", 1)
+                goToPlot(player, id)
             }
-        }
-
-        executor {
-            if (source !is Player) return@executor
-            goToPlot(source, 1)
         }
     }
 
@@ -39,9 +36,9 @@ class HomeArgument(source: CommandSender) : CommandArgument<CommandSender, Strin
         val world = worlds[id-1]
 
         if (world.bukkitWorld == null) {
-            source.sendMessage(CreativeWorlds.prefix.append(Component.text("Loading world, we will teleport you when the world has been loaded.").color(NamedTextColor.GREEN)))
+            player.sendMessage(CreativeWorlds.prefix.append(Component.text("Loading world, you will be teleported when the world has been loaded.").color(NamedTextColor.GREEN)))
         } else {
-            source.sendMessage(CreativeWorlds.prefix.append(Component.text("Teleporting you to the world.").color(NamedTextColor.GREEN)))
+            player.sendMessage(CreativeWorlds.prefix.append(Component.text("Teleporting you to the world.").color(NamedTextColor.GREEN)))
         }
         world.load()
         world.bukkitWorld?.spawnLocation?.let { player.teleport(it) }
