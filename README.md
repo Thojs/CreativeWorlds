@@ -8,7 +8,7 @@
 CreativeWorlds is a Paper plugin that manages custom player worlds. Players are able to create and build worlds with configurable limitations.
 Players can visit other worlds, or team up with others.
 
-The current version provides support for Paper 1.19.4
+The current version provides support for Paper 1.21.8
 
 ### Features
 - World management
